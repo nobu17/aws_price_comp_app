@@ -33,7 +33,7 @@ func (u *alertService) GetAlertLog(req GetInputModel) (GetOutputModel, error) {
 	}
 	list := make([]SendAlertLog, 0)
 	for _, item := range res.SendAlertLogList {
-		list = append(list, NewSendAlertLog(item.UserID, item.AlertDate, item.ProductID, item.Price))
+		list = append(list, NewSendAlertLog(item.UserID, item.AlertDate, item.StoreType, item.ProductID, item.Price))
 	}
 
 	var output = GetOutputModel{SendAlertLogList: list}

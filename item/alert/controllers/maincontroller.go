@@ -46,7 +46,7 @@ func (u *AlertController) GetAlertLog(req GetRequest) (GetResponce, error) {
 	}
 	var list = make([]SendAlertLog, 0)
 	for _, item := range res.SendAlertLogList {
-		list = append(list, NewSendAlertLog(item.UserID, item.AlertDate, item.ProductID, item.Price))
+		list = append(list, NewSendAlertLog(item.UserID, item.AlertDate, item.StoreType, item.ProductID, item.Price))
 	}
 
 	var respo = GetResponce{SendAlertLogList: list}

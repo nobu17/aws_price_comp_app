@@ -25,6 +25,8 @@ type sendAlertLog struct {
 	UserID string `dynamo:"user_id"`
 	// アラート日付
 	AlertDate string `dynamo:"alert_date"`
+	// 店鋪種類
+	StoreType string `dynamo:"store_type"`
 	// 商品ID
 	ProductID string `dynamo:"product_id"`
 	// 価格
@@ -42,7 +44,7 @@ func (u *dynamoRepository) GetAlertLog(req GetRequest) (GetResponce, error) {
 	}
 	var list = make([]SendAlertLog, 0)
 	for _, item := range items {
-		var t = NewSendAlertLog(item.UserID, item.AlertDate, item.ProductID, item.Price)
+		var t = NewSendAlertLog(item.UserID, item.AlertDate, item.StoreType, item.ProductID, item.Price)
 		list = append(list, t)
 	}
 	return GetResponce{SendAlertLogList: list}, nil

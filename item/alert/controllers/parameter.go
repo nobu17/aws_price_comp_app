@@ -20,6 +20,8 @@ type SendAlertLog struct {
 	UserID string `json:"user_id"`
 	// アラート日付
 	AlertDate string `json:"alert_date"`
+	// 店鋪種類
+	StoreType string `json:"store_type"`
 	// 商品ID
 	ProductID string `json:"product_id"`
 	// 価格
@@ -27,10 +29,11 @@ type SendAlertLog struct {
 }
 
 // NewSendAlertLog construcotr
-func NewSendAlertLog(userID string, alertDate string, productID string, price int) SendAlertLog {
+func NewSendAlertLog(userID string, alertDate string, storeType string, productID string, price int) SendAlertLog {
 	return SendAlertLog{
 		UserID:    userID,
 		AlertDate: alertDate,
+		StoreType: storeType,
 		ProductID: productID,
 		Price:     price,
 	}
