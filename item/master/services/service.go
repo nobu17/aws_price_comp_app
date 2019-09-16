@@ -22,7 +22,7 @@ func NewItemMasterService(logger log.LoggerImpl, repository repositories.ItemMas
 
 // GetItemMasters get itemmaster
 func (u *itemMasterService) GetItemMasters(req InputModel) (OutputModel, error) {
-	u.logger.LogWriteWithMsgAndObj(log.Info, "end GetItemMasters:", req)
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start GetItemMasters:", req)
 
 	var input = repositories.Request{UserID: req.UserID}
 	res, err := u.repository.GetItemMaster(input)

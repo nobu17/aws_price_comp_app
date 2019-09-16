@@ -1,0 +1,43 @@
+package services
+
+import (
+	"common/log"
+	"fmt"
+	"item/alert/repositories"
+)
+
+// alertService serivce
+type alertService struct {
+	logger     log.LoggerImpl
+	repository repositories.AlertImpl
+}
+
+// NewItemMasterService constructor
+func NewItemMasterService(logger log.LoggerImpl, repository repositories.AlertImpl) ServiceImpl {
+	return &alertService{
+		logger:     logger,
+		repository: repository,
+	}
+}
+
+// GetAlertLog impl
+func (u *alertService) GetAlertLog(req GetInputModel) (GetOutputModel, error) {
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start GetAlertLog:", req)
+
+	var input = repositories.GetRequest{UserID: req.UserID, MinAlertDate: req.MinAlertDate}
+	res, err := u.repository.GetAlertLog(input)
+	if err != nil {
+		u.logger.LogWrite(log.Error, "repository retrun error:"+fmt.Sprint(err))
+		u.logger.LogWrite(log.Info, "end GetAlertLog")
+		return GetOutputModel{}, err
+	}
+	list := make([]SendAlertLog, 0)
+	for _, item := range res.SendAlertLogList {
+		list = append(list, NewSendAlertLog(item.UserID, item.AlertDate, item.ProductID, item.Price))
+	}
+
+	var output = GetOutputModel{SendAlertLogList: list}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "end GetAlertLog:", output)
+
+	return output, nil
+}

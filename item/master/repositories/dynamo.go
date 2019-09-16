@@ -9,7 +9,7 @@ import (
 	"github.com/guregu/dynamo"
 )
 
-// DynamoRepository interface
+// dynamoRepository interface
 type dynamoRepository struct {
 	logger log.LoggerImpl
 }
