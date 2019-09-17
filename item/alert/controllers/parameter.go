@@ -1,7 +1,12 @@
 package controllers
 
+import (
+	"item/common"
+)
+
 // GetRequest input
 type GetRequest struct {
+	common.RequestCommon
 	// ユーザーID
 	UserID string `json:"user_id"`
 	// 最小日付
@@ -12,6 +17,16 @@ type GetRequest struct {
 type GetResponce struct {
 	// 送付リスト
 	SendAlertLogList []SendAlertLog `json:"send_alert_list"`
+}
+
+// PutRequest struct
+type PutRequest struct {
+	// 挿入データ
+	PutAlertLogList []SendAlertLog
+}
+
+// PutResponce result
+type PutResponce struct {
 }
 
 // SendAlertLog struct

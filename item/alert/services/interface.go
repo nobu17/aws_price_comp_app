@@ -3,6 +3,7 @@ package services
 // ServiceImpl service interface
 type ServiceImpl interface {
 	GetAlertLog(req GetInputModel) (GetOutputModel, error)
+	PutAlertLog(req PutInputModel) error
 }
 
 // GetInputModel input
@@ -18,6 +19,12 @@ type GetOutputModel struct {
 	// ItemMasters 商品リスト
 	// 送付リスト
 	SendAlertLogList []SendAlertLog
+}
+
+// PutInputModel struct
+type PutInputModel struct {
+	// 挿入データ
+	PutAlertLogList []SendAlertLog
 }
 
 // SendAlertLog struct

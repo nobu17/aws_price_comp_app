@@ -1,7 +1,10 @@
 package controllers
 
+import "item/common"
+
 // Request input
 type Request struct {
+	common.RequestCommon
 	// ユーザーID
 	UserID string `json:"user_id"`
 }

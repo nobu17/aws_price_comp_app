@@ -50,6 +50,23 @@ func (u *dynamoRepository) GetAlertLog(req GetRequest) (GetResponce, error) {
 	return GetResponce{SendAlertLogList: list}, nil
 }
 
+func (u *dynamoRepository) PutAlertLog(req PutRequest) (PutResponce, error) {
+	u.logger.LogWrite(log.Info, "start PutAlertLog")
+	table := u.getTable()
+	batch := table.Batch().Write().Put(req.PutAlertLogList)
+	wrote, err := batch.Run()
+	if err != nil {
+		u.logger.LogWrite(log.Error, "error:"+fmt.Sprint(err))
+		u.logger.LogWrite(log.Info, "end PutAlertLog")
+		return PutResponce{Wrote: wrote}, err
+	}
+	if len(req.PutAlertLogList) != wrote {
+		u.logger.LogWrite(log.Error, fmt.Sprintf("some wrote is failed. Total:%v Success:%v", len(req.PutAlertLogList), wrote))
+	}
+	u.logger.LogWrite(log.Info, "end PutAlertLog")
+	return PutResponce{Wrote: wrote}, err
+}
+
 func (u *dynamoRepository) getTable() dynamo.Table {
 	db := dynamo.New(session.New(), &aws.Config{
 		Region: aws.String("ap-northeast-1"),

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"common/log"
 	"fmt"
 	"item/alert/repositories"
@@ -40,4 +41,22 @@ func (u *alertService) GetAlertLog(req GetInputModel) (GetOutputModel, error) {
 	u.logger.LogWriteWithMsgAndObj(log.Info, "end GetAlertLog:", output)
 
 	return output, nil
+}
+
+func (u *alertService) PutAlertLog(req PutInputModel) error {
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start PutAlertLog:", req)
+
+	list := make([]repositories.SendAlertLog, 0)
+	for _, item := range req.PutAlertLogList {
+		list = append(list, repositories.NewSendAlertLog(item.UserID, item.AlertDate, item.StoreType, item.ProductID, item.Price))
+	}
+	input := repositories.PutRequest{PutAlertLogList: list}
+	res, err := u.repository.PutAlertLog(input)
+	if(err != nil) {
+		return err
+	}
+	if(len(list) != res.Wrote) {
+		return errors.New("some record is failed to write")
+	}
+	return nil
 }

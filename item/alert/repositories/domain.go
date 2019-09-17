@@ -3,6 +3,7 @@ package repositories
 // AlertImpl impl
 type AlertImpl interface {
 	GetAlertLog(req GetRequest) (GetResponce, error)
+	PutAlertLog(req PutRequest) (PutResponce, error)
 }
 
 // GetRequest リクエスト入力パラメータ
@@ -17,6 +18,18 @@ type GetRequest struct {
 type GetResponce struct {
 	// 送付リスト
 	SendAlertLogList []SendAlertLog
+}
+
+// PutRequest struct
+type PutRequest struct {
+	// 挿入データ
+	PutAlertLogList []SendAlertLog
+}
+
+// PutResponce result
+type PutResponce struct {
+	// 書き込み数
+	Wrote int
 }
 
 // SendAlertLog struct
