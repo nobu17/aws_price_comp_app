@@ -26,18 +26,21 @@ func (u *surugayaRepository) GetProductPrice(req Request) (ProductInfo, error) {
 	if req.ProductID != "" {
 		return u.getProductInfo(req.ProductID)
 	}
+	u.logger.LogWrite(log.Error, "empty productID")
 	return NewProductInfo(req.ProductID), errors.New("no input productID")
 }
 
 func (u *surugayaRepository) getProductInfo(productID string) (ProductInfo, error) {
 	doc, err := goquery.NewDocument(surugayaURLBase + productID)
 	if err != nil {
+		u.logger.LogWrite(log.Error, "load page error:"+surugayaURLBase+productID)
 		return NewProductInfo(productID), err
 	}
 	// get a price
 	pRes := doc.Find("span.mgnL10")
 	if len(pRes.Nodes) < 1 {
 		// sold out
+		u.logger.LogWrite(log.Warn, "lnot found span.mgnL10")
 		tRes := NewProductInfo(productID)
 		tRes.IsSoldOut = true
 		return tRes, nil
@@ -53,6 +56,7 @@ func (u *surugayaRepository) getProductInfo(productID string) (ProductInfo, erro
 		}
 	})
 	if currentPrice <= 0 {
+		u.logger.LogWriteWithMsgAndObj(log.Error, "price get failed", pRes)
 		return NewProductInfo(productID), errors.New("price get failed")
 	}
 	tRes := NewProductInfo(productID)

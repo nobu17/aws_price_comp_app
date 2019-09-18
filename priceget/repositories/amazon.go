@@ -30,8 +30,10 @@ func (u *amazonMakertRepository) GetProductPrice(req Request) (ProductInfo, erro
 }
 
 func (u *amazonMakertRepository) getProductInfo(isbn string) (ProductInfo, error) {
+	// Load the URL
 	doc, err := goquery.NewDocument(amazonURLBase + isbn)
 	if err != nil {
+		u.logger.LogWrite(log.Error, "load page error:" + amazonURLBase + isbn)
 		return NewProductInfo(isbn), err
 	}
 	// read html
@@ -39,9 +41,10 @@ func (u *amazonMakertRepository) getProductInfo(isbn string) (ProductInfo, error
 	if err != nil {
 		return NewProductInfo(isbn), err
 	}
-	u.logger.LogWrite(log.Info, "html:"+html)
+	// u.logger.LogWrite(log.Info, "html:"+html)
 	// empty html is treated as error
 	if html == "<html><head></head><body></body></html>" {
+		u.logger.LogWrite(log.Error, "epmty page")
 		return NewProductInfo(isbn), errors.New("no html data")
 	}
 
@@ -49,6 +52,7 @@ func (u *amazonMakertRepository) getProductInfo(isbn string) (ProductInfo, error
 	pRes := doc.Find("span.olpOfferPrice")
 	if len(pRes.Nodes) < 1 {
 		// sold out
+		u.logger.LogWrite(log.Info, "span.olpOfferPrice is not existed")
 		tRes := NewProductInfo(isbn)
 		tRes.IsSoldOut = true
 		return tRes, nil
@@ -56,17 +60,20 @@ func (u *amazonMakertRepository) getProductInfo(isbn string) (ProductInfo, error
 	priceText := pRes.First().Text()
 	priceNum, err := u.getTrimmedPrice(priceText)
 	if err != nil || priceNum <= 0 {
+		u.logger.LogWrite(log.Error, "price string parse error:"+priceText)
 		return NewProductInfo(isbn), errors.New("price string parse error:" + priceText)
 	}
 
 	// get a shiping price
 	sRes := doc.Find("span.olpShippingPrice")
 	if len(sRes.Nodes) < 1 {
+		u.logger.LogWrite(log.Error, "no shipping price data")
 		return NewProductInfo(isbn), errors.New("no shipping price data")
 	}
 	shippingPriceText := sRes.First().Text()
 	shippingPriceNum, err := u.getTrimmedPrice(shippingPriceText)
 	if err != nil {
+		u.logger.LogWrite(log.Error, "shippingPrice string parse error")
 		return NewProductInfo(isbn), errors.New("shippingPrice string parse error:" + shippingPriceText)
 	}
 
