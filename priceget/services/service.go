@@ -36,7 +36,10 @@ func (u *productService) SetImpl(factory factories.FactoryImpl, logger log.Logge
 
 // GetProductInfo service impl
 func (u *productService) GetProductInfo(req InputProductModel) (OutputProductModel, error) {
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start productService:GetProductInfo", req)
 	if req.ProductList == nil || len(req.ProductList) == 0 {
+		u.logger.LogWrite(log.Error, "ProductList is empty")
+		u.logger.LogWrite(log.Info, "end productService:GetProductInfo")
 		return OutputProductModel{}, errors.New("ProductList is empty")
 	}
 	var list = make([]ProductInfo, 0)
@@ -44,6 +47,8 @@ func (u *productService) GetProductInfo(req InputProductModel) (OutputProductMod
 	for _, prod := range req.ProductList {
 		repository, err := u.factory.GetPriceGetRepository(prod.StoreType)
 		if err != nil {
+			u.logger.LogWrite(log.Error, "repository get error")
+			u.logger.LogWrite(log.Info, "end productService:GetProductInfo")
 			return OutputProductModel{}, errors.New("repository get error")
 		}
 		u.repository = repository
@@ -54,5 +59,7 @@ func (u *productService) GetProductInfo(req InputProductModel) (OutputProductMod
 			list = append(list, ProductInfo{ProductID: res.ProductID, Price: res.Price, ShippingFee: res.ShippingFee, IsSoldOut: res.IsSoldOut})
 		}
 	}
-	return OutputProductModel{ProductInfoList: list, FailProductInfoList: failList}, nil
+	output := OutputProductModel{ProductInfoList: list, FailProductInfoList: failList}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "end productService:GetProductInfo", output)
+	return output, nil
 }

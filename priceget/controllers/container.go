@@ -14,8 +14,8 @@ type Container struct {
 // NewService init
 func (u *Container) NewService() services.ServiceImpl {
 	logger := u.NewLogger()
-	aRepo := repositories.NewAmazonMakertRepository()
-	sRepo := repositories.NewSurugayaRepository()
+	aRepo := repositories.NewAmazonMakertRepository(logger)
+	sRepo := repositories.NewSurugayaRepository(logger)
 	factory := factories.NewRepsoitoryFactrory(aRepo, sRepo)
 	serv := services.NewProductService(factory, logger)
 

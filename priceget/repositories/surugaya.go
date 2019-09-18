@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"common/log"
 	"errors"
 	"strconv"
 	"strings"
@@ -10,11 +11,12 @@ import (
 
 // surugayaRepository SurugayaRepository
 type surugayaRepository struct {
+	logger log.LoggerImpl
 }
 
 // NewSurugayaRepository constructor
-func NewSurugayaRepository() GetProductPriceImpl {
-	return &surugayaRepository{}
+func NewSurugayaRepository(logger log.LoggerImpl) GetProductPriceImpl {
+	return &surugayaRepository{logger: logger}
 }
 
 const surugayaURLBase = "https://www.suruga-ya.jp/product/detail/"

@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"common/log"
 	"errors"
 	"strconv"
 	"strings"
@@ -12,11 +13,12 @@ const amazonURLBase = "https://www.amazon.co.jp/gp/offer-listing/"
 
 // AmazonMakertRepository AmazonMarketPlace実装
 type amazonMakertRepository struct {
+	logger log.LoggerImpl
 }
 
 // NewAmazonMakertRepository constructor
-func NewAmazonMakertRepository() GetProductPriceImpl {
-	return &amazonMakertRepository{}
+func NewAmazonMakertRepository(logger log.LoggerImpl) GetProductPriceImpl {
+	return &amazonMakertRepository{logger: logger}
 }
 
 // GetProductPrice impl
