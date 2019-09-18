@@ -27,7 +27,7 @@ type GetResponce struct {
 // PutRequest struct
 type PutRequest struct {
 	// 挿入データ
-	PutAlertLogList []SendAlertLog
+	PutAlertLogList []SendAlertLog `json:"put_alert_list"`
 }
 
 // PutResponce result

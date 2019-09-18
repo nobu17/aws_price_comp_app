@@ -28,12 +28,12 @@ func NewAlertController() AlertController {
 
 // GetAlertLog getitem
 func (u *AlertController) GetAlertLog(req GetRequest) (GetResponce, error) {
-	u.logger.LogWriteWithMsgAndObj(log.Info, "start GetAlertLog", req)
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start AlertController:GetAlertLog", req)
 
 	err := u.validateGetReq(req)
 	if err != nil {
 		u.logger.LogWrite(log.Info, "input error:"+fmt.Sprint(err))
-		u.logger.LogWrite(log.Info, "end GetAlertLog:")
+		u.logger.LogWrite(log.Info, "end AlertController:GetAlertLog:")
 		return GetResponce{}, err
 	}
 
@@ -41,7 +41,7 @@ func (u *AlertController) GetAlertLog(req GetRequest) (GetResponce, error) {
 	res, err := u.service.GetAlertLog(inputModel)
 	if err != nil {
 		u.logger.LogWrite(log.Info, "servie error:"+fmt.Sprint(err))
-		u.logger.LogWrite(log.Info, "end GetAlertLog:")
+		u.logger.LogWrite(log.Info, "end AlertController:GetAlertLog:")
 		return GetResponce{}, err
 	}
 	var list = make([]SendAlertLog, 0)
@@ -50,7 +50,7 @@ func (u *AlertController) GetAlertLog(req GetRequest) (GetResponce, error) {
 	}
 
 	var respo = GetResponce{SendAlertLogList: list}
-	u.logger.LogWriteWithMsgAndObj(log.Info, "end GetAlertLog:", respo)
+	u.logger.LogWriteWithMsgAndObj(log.Info, "end AlertController:GetAlertLog:", respo)
 	return respo, nil
 }
 

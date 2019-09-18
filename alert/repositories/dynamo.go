@@ -38,6 +38,17 @@ type sendAlertLog struct {
 	Price int `dynamo:"price"`
 }
 
+// newSendAlertLog construcotr
+func newSendAlertLog(userID string, alertDate string, storeType string, productID string, price int) sendAlertLog {
+	return sendAlertLog{
+		UserID:    userID,
+		AlertDate: alertDate,
+		StoreType: storeType,
+		ProductID: productID,
+		Price:     price,
+	}
+}
+
 // GetAlertLog impl
 func (u *dynamoRepository) GetAlertLog(req GetRequest) (GetResponce, error) {
 	var items []sendAlertLog
@@ -55,10 +66,20 @@ func (u *dynamoRepository) GetAlertLog(req GetRequest) (GetResponce, error) {
 	return GetResponce{SendAlertLogList: list}, nil
 }
 
+// PutAlertLog putalertlog
 func (u *dynamoRepository) PutAlertLog(req PutRequest) (PutResponce, error) {
 	u.logger.LogWrite(log.Info, "start PutAlertLog")
+	var batchSize = len(req.PutAlertLogList)
+	var list = make([]interface{}, batchSize)
+	for i := 0; i < batchSize; i++ {
+		var item = req.PutAlertLogList[i]
+		var t = newSendAlertLog(item.UserID, item.AlertDate, item.StoreType, item.ProductID, item.Price)
+		list[i] = t
+	}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "batch insert", list)
+
 	table := u.getTable()
-	batch := table.Batch().Write().Put(req.PutAlertLogList)
+	batch := table.Batch().Write().Put(list...)
 	wrote, err := batch.Run()
 	if err != nil {
 		u.logger.LogWrite(log.Error, "error:"+fmt.Sprint(err))
