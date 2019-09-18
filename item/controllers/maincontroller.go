@@ -36,7 +36,7 @@ func (u *ItemMasterController) GetItemMaster(req GetRequest) (GetResponce, error
 		return GetResponce{}, err
 	}
 
-	var inputModel = services.InputModel{UserID: req.UserID}
+	var inputModel = services.InputModel{UserID: req.UserID, GroupID: req.GroupID}
 	res, err := u.service.GetItemMasters(inputModel)
 	if err != nil {
 		u.logger.LogWrite(log.Info, "servie error:"+fmt.Sprint(err))
@@ -56,6 +56,9 @@ func (u *ItemMasterController) GetItemMaster(req GetRequest) (GetResponce, error
 func (u *ItemMasterController) validate(req GetRequest) error {
 	if req.UserID == "" || strings.TrimSpace(req.UserID) == "" {
 		return errors.New("UserID is empty")
+	}
+	if req.GroupID == "" || strings.TrimSpace(req.GroupID) == "" {
+		return errors.New("GroupID is empty")
 	}
 	return nil
 }

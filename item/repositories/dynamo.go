@@ -42,7 +42,7 @@ type itemMaster struct {
 func (u *dynamoRepository) GetItemMaster(req Request) (Responce, error) {
 	var items []itemMaster
 	table := u.getTable()
-	err := table.Get("user_id", req.UserID).All(&items)
+	err := table.Get("user_id", req.UserID).Range("group_id", dynamo.Equal, req.GroupID).All(&items)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "table.Get Error"+fmt.Sprint(err))
 		return Responce{}, err

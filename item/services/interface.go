@@ -9,6 +9,8 @@ type ServiceImpl interface {
 type InputModel struct {
 	// ユーザーID
 	UserID string
+	// グループID
+	GroupID string
 }
 
 // OutputModel output

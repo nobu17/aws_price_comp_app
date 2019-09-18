@@ -12,6 +12,8 @@ type Request struct {
 type GetRequest struct {
 	// ユーザーID
 	UserID string `json:"user_id"`
+	// グループID
+	GroupID string `json:"group_id"`
 }
 
 // GetResponce output

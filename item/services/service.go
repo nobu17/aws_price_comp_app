@@ -24,7 +24,7 @@ func NewItemMasterService(logger log.LoggerImpl, repository repositories.ItemMas
 func (u *itemMasterService) GetItemMasters(req InputModel) (OutputModel, error) {
 	u.logger.LogWriteWithMsgAndObj(log.Info, "start GetItemMasters:", req)
 
-	var input = repositories.Request{UserID: req.UserID}
+	var input = repositories.Request{UserID: req.UserID, GroupID: req.GroupID}
 	res, err := u.repository.GetItemMaster(input)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "repository retrun error:"+fmt.Sprint(err))

@@ -4,6 +4,8 @@ package repositories
 type Request struct {
 	// ユーザーID
 	UserID string
+	// グループID
+	GroupID string
 }
 
 // Responce result
