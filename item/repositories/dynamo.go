@@ -3,11 +3,16 @@ package repositories
 import (
 	"common/log"
 	"fmt"
+	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
 )
+
+// deafult dynamoregion
+const envRegionKey = "REGION"
+const defaultRegion = "ap-northeast-1"
 
 // dynamoRepository interface
 type dynamoRepository struct {
@@ -51,8 +56,13 @@ func (u *dynamoRepository) GetItemMaster(req Request) (Responce, error) {
 }
 
 func (u *dynamoRepository) getTable() dynamo.Table {
+	region := os.Getenv(envRegionKey)
+	if region == "" {
+		region = defaultRegion
+	}
+
 	db := dynamo.New(session.New(), &aws.Config{
-		Region: aws.String("ap-northeast-1"),
+		Region: aws.String(region),
 	})
 	table := db.Table("ItemMaster")
 	return table

@@ -1,16 +1,21 @@
 package controllers
 
-import "item/common"
-
-// Request input
+// Request requestcommon
 type Request struct {
-	common.RequestCommon
+	// method param
+	Method string `json:"method"`
+	// GetRequest method get case getparam
+	GetRequest GetRequest `json:"get_param"`
+}
+
+// GetRequest input
+type GetRequest struct {
 	// ユーザーID
 	UserID string `json:"user_id"`
 }
 
-// Responce output
-type Responce struct {
+// GetResponce output
+type GetResponce struct {
 	// ItemMasters 商品リスト
 	ItemMasters []ItemMaster `json:"item_masters"`
 }

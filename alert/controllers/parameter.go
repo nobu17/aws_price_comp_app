@@ -1,12 +1,17 @@
 package controllers
 
-import (
-	"item/common"
-)
+// Request request common
+type Request struct {
+	// Method type
+	Method string `json:"method"`
+	// GetParam
+	GetRequest GetRequest `json:"get_param"`
+	// PutRequest
+	PutRequest PutRequest `json:"put_param"`
+}
 
 // GetRequest input
 type GetRequest struct {
-	common.RequestCommon
 	// ユーザーID
 	UserID string `json:"user_id"`
 	// 最小日付

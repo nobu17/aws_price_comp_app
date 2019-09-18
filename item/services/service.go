@@ -3,7 +3,7 @@ package services
 import (
 	"common/log"
 	"fmt"
-	"item/master/repositories"
+	"item/repositories"
 )
 
 // productService serivce

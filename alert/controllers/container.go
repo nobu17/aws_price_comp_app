@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"common/log"
-	"item/alert/repositories"
-	"item/alert/services"
+	"alert/repositories"
+	"alert/services"
 )
 
 // Container struct

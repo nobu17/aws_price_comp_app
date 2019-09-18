@@ -1,10 +1,10 @@
 package services
 
 import (
-	"errors"
+	"alert/repositories"
 	"common/log"
+	"errors"
 	"fmt"
-	"item/alert/repositories"
 )
 
 // alertService serivce
@@ -52,10 +52,10 @@ func (u *alertService) PutAlertLog(req PutInputModel) error {
 	}
 	input := repositories.PutRequest{PutAlertLogList: list}
 	res, err := u.repository.PutAlertLog(input)
-	if(err != nil) {
+	if err != nil {
 		return err
 	}
-	if(len(list) != res.Wrote) {
+	if len(list) != res.Wrote {
 		return errors.New("some record is failed to write")
 	}
 	return nil

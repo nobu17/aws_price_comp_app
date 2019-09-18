@@ -4,7 +4,7 @@ import (
 	"common/log"
 	"errors"
 	"fmt"
-	"item/master/services"
+	"item/services"
 	"strings"
 )
 
@@ -26,14 +26,14 @@ func NewItemMasterController() ItemMasterController {
 }
 
 // GetItemMaster getitem
-func (u *ItemMasterController) GetItemMaster(req Request) (Responce, error) {
+func (u *ItemMasterController) GetItemMaster(req GetRequest) (GetResponce, error) {
 	u.logger.LogWriteWithMsgAndObj(log.Info, "start GetItemMaster", req)
 
 	err := u.validate(req)
 	if err != nil {
 		u.logger.LogWrite(log.Info, "input error:"+fmt.Sprint(err))
 		u.logger.LogWrite(log.Info, "end GetItemMaster:")
-		return Responce{}, err
+		return GetResponce{}, err
 	}
 
 	var inputModel = services.InputModel{UserID: req.UserID}
@@ -41,19 +41,19 @@ func (u *ItemMasterController) GetItemMaster(req Request) (Responce, error) {
 	if err != nil {
 		u.logger.LogWrite(log.Info, "servie error:"+fmt.Sprint(err))
 		u.logger.LogWrite(log.Info, "end GetItemMaster:")
-		return Responce{}, err
+		return GetResponce{}, err
 	}
 	var list = make([]ItemMaster, 0)
 	for _, item := range res.ItemMasters {
 		list = append(list, NewItemMaster(item.GroupID, item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName))
 	}
 
-	var respo = Responce{ItemMasters: list}
+	var respo = GetResponce{ItemMasters: list}
 	u.logger.LogWriteWithMsgAndObj(log.Info, "end GetItemMaster:", respo)
 	return respo, nil
 }
 
-func (u *ItemMasterController) validate(req Request) error {
+func (u *ItemMasterController) validate(req GetRequest) error {
 	if req.UserID == "" || strings.TrimSpace(req.UserID) == "" {
 		return errors.New("UserID is empty")
 	}
