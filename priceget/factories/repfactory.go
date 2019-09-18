@@ -26,9 +26,9 @@ func (u *repsoitoryFactrory) GetPriceGetRepository(storeType string) (repositori
 	}
 	switch storeType {
 	case "amazon":
-		return repositories.NewAmazonMakertRepository(), nil
+		return u.amaRepsotiroy, nil
 	case "surugaya":
-		return repositories.NewSurugayaRepository(), nil
+		return u.surugayaRepsitory, nil
 	default:
 		return nil, errors.New("no match store type:" + storeType)
 	}

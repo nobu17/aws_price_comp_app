@@ -39,6 +39,7 @@ func (u *amazonMakertRepository) getProductInfo(isbn string) (ProductInfo, error
 	if err != nil {
 		return NewProductInfo(isbn), err
 	}
+	u.logger.LogWrite(log.Info, "html:"+html)
 	// empty html is treated as error
 	if html == "<html><head></head><body></body></html>" {
 		return NewProductInfo(isbn), errors.New("no html data")
