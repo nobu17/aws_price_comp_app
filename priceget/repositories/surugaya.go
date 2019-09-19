@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"common/info"
 	"common/log"
 	"errors"
 	"strconv"
@@ -19,8 +20,6 @@ func NewSurugayaRepository(logger log.LoggerImpl) GetProductPriceImpl {
 	return &surugayaRepository{logger: logger}
 }
 
-const surugayaURLBase = "https://www.suruga-ya.jp/product/detail/"
-
 // GetProductPrice impl
 func (u *surugayaRepository) GetProductPrice(req Request) (ProductInfo, error) {
 	if req.ProductID != "" {
@@ -31,9 +30,9 @@ func (u *surugayaRepository) GetProductPrice(req Request) (ProductInfo, error) {
 }
 
 func (u *surugayaRepository) getProductInfo(productID string) (ProductInfo, error) {
-	doc, err := goquery.NewDocument(surugayaURLBase + productID)
+	doc, err := goquery.NewDocument(info.GetSurugayaPrdocutURL(productID))
 	if err != nil {
-		u.logger.LogWrite(log.Error, "load page error:"+surugayaURLBase+productID)
+		u.logger.LogWrite(log.Error, "load page error:"+info.GetSurugayaPrdocutURL(productID))
 		return NewProductInfo(productID), err
 	}
 	// get a price

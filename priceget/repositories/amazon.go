@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"common/info"
 	"common/log"
 	"errors"
 	"strconv"
@@ -8,8 +9,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 )
-
-const amazonURLBase = "https://www.amazon.co.jp/gp/offer-listing/"
 
 // AmazonMakertRepository AmazonMarketPlace実装
 type amazonMakertRepository struct {
@@ -31,9 +30,9 @@ func (u *amazonMakertRepository) GetProductPrice(req Request) (ProductInfo, erro
 
 func (u *amazonMakertRepository) getProductInfo(isbn string) (ProductInfo, error) {
 	// Load the URL
-	doc, err := goquery.NewDocument(amazonURLBase + isbn)
+	doc, err := goquery.NewDocument(info.GetAmazonPrdocutURL(isbn))
 	if err != nil {
-		u.logger.LogWrite(log.Error, "load page error:" + amazonURLBase + isbn)
+		u.logger.LogWrite(log.Error, "load page error:"+info.GetAmazonPrdocutURL(isbn))
 		return NewProductInfo(isbn), err
 	}
 	// read html
