@@ -1,6 +1,7 @@
 package factories
 
 import (
+	"common/info"
 	"errors"
 	"priceget/repositories"
 	"strings"
@@ -24,12 +25,11 @@ func (u *repsoitoryFactrory) GetPriceGetRepository(storeType string) (repositori
 	if storeType == "" || strings.TrimSpace(storeType) == "" {
 		return nil, errors.New("no storeType")
 	}
-	switch storeType {
-	case "amazon":
+	if info.IsStoreTypeAmazon(storeType) {
 		return u.amaRepsotiroy, nil
-	case "surugaya":
-		return u.surugayaRepsitory, nil
-	default:
-		return nil, errors.New("no match store type:" + storeType)
 	}
+	if info.IsStoreTypeSurugaya(storeType) {
+		return u.surugayaRepsitory, nil
+	}
+	return nil, errors.New("no match store type:" + storeType)
 }

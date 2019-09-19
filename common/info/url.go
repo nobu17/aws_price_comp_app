@@ -15,3 +15,19 @@ func GetAmazonPrdocutURL(productID string) string {
 func GetSurugayaPrdocutURL(productID string) string {
 	return surugayaURLBase + productID
 }
+
+// IsStoreTypeAmazon judge is store type is amazon.
+func IsStoreTypeAmazon(storeType string) bool {
+	if storeType == "amazon" {
+		return true
+	}
+	return false
+}
+
+// IsStoreTypeSurugaya judge is store type is surugaya.
+func IsStoreTypeSurugaya(storeType string) bool {
+	if storeType == "surugaya" {
+		return true
+	}
+	return false
+}
