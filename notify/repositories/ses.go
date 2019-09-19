@@ -96,7 +96,7 @@ func (u *sesRepository) getEmailInput(sendMail string, body string) *ses.SendEma
 
 func (u *sesRepository) getMailBody(groupID string, infoList []ProductInfo) string {
 	str := "<h1>指し値よりも安い商品があります。</h1></br>"
-	str += fmt.Sprintf("<h2>グループ名:%v</2></br></br>", groupID)
+	str += fmt.Sprintf("<h2>グループ名:%v</h2></br></br>", groupID)
 
 	for _, item := range infoList {
 		str += fmt.Sprintf("<p>商品名:%v</p></br>", item.Name)
