@@ -52,16 +52,16 @@ func (u *NotifyController) SendNotify(req PutRequest) (PutResponce, error) {
 }
 
 func (u *NotifyController) validatePutReq(req PutRequest) error {
-	if req.UserInfo.UserID != "" {
+	if req.UserInfo.UserID == "" {
 		return errors.New("UserInfo.UserID is empty")
 	}
-	if req.UserInfo.Name != "" {
+	if req.UserInfo.Name == "" {
 		return errors.New("UserInfo.Name is empty")
 	}
-	if req.UserInfo.Mail != "" {
+	if req.UserInfo.Mail == "" {
 		return errors.New("UserInfo.Mail is empty")
 	}
-	if req.GroupID != "" {
+	if req.GroupID == "" {
 		return errors.New("UserInfo.GroupID is empty")
 	}
 	if len(req.ProductInfoList) < 1 {
