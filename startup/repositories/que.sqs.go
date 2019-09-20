@@ -12,6 +12,10 @@ import (
 type sqsMessage struct {
 	// userid
 	UserID string `json:"user_id"`
+	// username
+	UserName string `json:"user_name"`
+	// mail
+	Mail string `json:"mail"`
 	// id
 	GroupID string `json:"group_id"`
 	// name
@@ -34,7 +38,7 @@ func (u *sqsRepositories) SendObservRequest(req SendRequest) error {
 	}
 	var err error
 	for _, itemG := range req.ItemGroupList {
-		msg := sqsMessage{UserID: req.UserInfo.UserID, GroupID: itemG.GroupID, GroupName: itemG.GroupName}
+		msg := sqsMessage{UserID: req.UserInfo.UserID, UserName: req.UserInfo.Name, Mail: req.UserInfo.Mail, GroupID: itemG.GroupID, GroupName: itemG.GroupName}
 		jsonBytes, err := json.Marshal(msg)
 		if err != nil {
 			u.logger.LogWrite(log.Error, "json marshall is failed:"+fmt.Sprint(err))
