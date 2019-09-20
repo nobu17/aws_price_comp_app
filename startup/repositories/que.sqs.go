@@ -9,6 +9,15 @@ import (
 	"os"
 )
 
+type sqsMessage struct {
+	// userid
+	UserID string `json:"user_id"`
+	// id
+	GroupID string `json:"group_id"`
+	// name
+	GroupName string `json:"group_name"`
+}
+
 type sqsRepositories struct {
 	logger log.LoggerImpl
 }
@@ -25,7 +34,8 @@ func (u *sqsRepositories) SendObservRequest(req SendRequest) error {
 	}
 	var err error
 	for _, itemG := range req.ItemGroupList {
-		jsonBytes, err := json.Marshal(itemG)
+		msg := sqsMessage{UserID: req.UserInfo.UserID, GroupID: itemG.GroupID, GroupName: itemG.GroupName}
+		jsonBytes, err := json.Marshal(msg)
 		if err != nil {
 			u.logger.LogWrite(log.Error, "json marshall is failed:"+fmt.Sprint(err))
 			break
