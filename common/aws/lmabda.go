@@ -3,6 +3,7 @@ package aws
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -24,16 +25,19 @@ func callLambda(invokeType string, funcName string, region string, payload inter
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("%v,%v,%v", funcName, region, invokeType)
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-
+	input := &lambda.InvokeInput{FunctionName: aws.String(funcName), Payload: jsonBytes, InvocationType: aws.String(invokeType)}
 	client := lambda.New(sess, &aws.Config{Region: aws.String(region)})
-	result, err := client.Invoke(&lambda.InvokeInput{FunctionName: aws.String(funcName), Payload: jsonBytes, InvocationType: aws.String(invokeType)})
+	result, err := client.Invoke(input)
 
-	if *result.FunctionError != "" {
-		return result, errors.New("function error:" + *result.FunctionError)
+	if result != nil && result.FunctionError != nil {
+		if *result.FunctionError == "" {
+			return result, errors.New("function error:" + *result.FunctionError)
+		}
 	}
 
 	return result, err

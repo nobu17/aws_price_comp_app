@@ -20,6 +20,7 @@ func NewObserveService(logger log.LoggerImpl, userRepository repositories.UserIn
 
 func (u *observeService) StartObserve(req InputModel) (OutputModel, error) {
 	// get user
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start observeService:StartObserve:", req)
 	userParam := repositories.NewGetRequest(req.UserID, req.Password)
 	res, err := u.userRepository.GetUserInfo(userParam)
 	if err != nil {
@@ -34,5 +35,6 @@ func (u *observeService) StartObserve(req InputModel) (OutputModel, error) {
 	if err != nil {
 		u.logger.LogWrite(log.Error, "SendObservRequest is failed:"+fmt.Sprint(err))
 	}
+	u.logger.LogWrite(log.Info, "end observeService:StartObserve:")
 	return OutputModel{}, err
 }

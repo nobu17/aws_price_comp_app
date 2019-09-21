@@ -147,6 +147,7 @@ func (u *compareService) filterPastSentItems(userID string, req []repositories.N
 	nowJST := util.GetJSTTimeStr(dayThrethold)
 
 	var input = repositories.AlertGetRequest{UserID: userID, MinAlertDate: nowJST}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "get alert:", input)
 	res, err := u.alertRepository.GetAlerts(input)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "get alert is failed:"+fmt.Sprint(err))
@@ -160,7 +161,7 @@ func (u *compareService) filterPastSentItems(userID string, req []repositories.N
 		var alertedItem = getAlertProduct(notifyItem.ProductID, notifyItem.StoreType, res.SendAlertList)
 		if alertedItem != nil {
 			// if more cheper than before alert it should alert
-			if (notifyItem.Price + notifyItem.ShippingFee) > alertedItem.Price {
+			if (notifyItem.Price + notifyItem.ShippingFee) >= alertedItem.Price {
 				u.logger.LogWriteWithMsgAndObj(log.Info, "not get over threthold:", notifyItem)
 				continue
 			}

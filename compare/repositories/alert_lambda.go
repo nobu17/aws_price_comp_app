@@ -34,11 +34,14 @@ func (u *alertambdaRepositories) GetAlerts(req AlertGetRequest) (AlertGetResponc
 	}
 
 	param := alertLambdaParam{Method: "get", GetParam: req}
-	res, err := aws.CallLambdaWithSync(ifuncName, region, param)
+	u.logger.LogWriteWithMsgAndObj(log.Info, "lambda input:", param)
+	res, err := aws.CallLambdaWithSync(afuncName, region, param)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "lambda call is failed"+fmt.Sprint(err))
 		return AlertGetResponce{}, err
 	}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "lambda result:", *res)
+	u.logger.LogWrite(log.Info, "lambda payload:"+string(res.Payload))
 	if *res.StatusCode != 200 {
 		u.logger.LogWrite(log.Error, "lambda call StatusCode is not 200"+fmt.Sprint(*res.StatusCode))
 		return AlertGetResponce{}, errors.New("lambda call StatusCode is not 200" + fmt.Sprint(*res.StatusCode))
