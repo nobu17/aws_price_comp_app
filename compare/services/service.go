@@ -114,8 +114,10 @@ func (u *compareService) getObservItemAndPriceList(req InputModel) (*repositorie
 func (u *compareService) sendNotifyAndPutAlertLog(input InputModel, notifies []repositories.NotifyProductInfo) error {
 	u.logger.LogWriteWithMsgAndObj(log.Info, "start sendNotifyAndPutAlertLog:input", input)
 	u.logger.LogWriteWithMsgAndObj(log.Info, "start sendNotifyAndPutAlertLog:notifies", notifies)
+
 	var user = repositories.NewNotifyUserInfo(input.UserID, input.UserName, input.Mail)
 	var request = repositories.NotifyPutRequest{UserInfo: user, GroupID: input.GroupID, ProductInfoList: notifies}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start SendNotify", request)
 	_, err := u.notifyRepository.SendNotify(request)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "SendNotify is failed:"+fmt.Sprint(err))

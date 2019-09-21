@@ -6,6 +6,8 @@ type Request struct {
 	Method string `json:"method"`
 	// GetRequest method get case getparam
 	GetRequest GetRequest `json:"get_param"`
+	// PutRequest method put case getparam
+	PutRequest PutRequest `json:"put_param"`
 }
 
 // GetRequest input
@@ -22,8 +24,20 @@ type GetResponce struct {
 	ItemMasters []ItemMaster `json:"item_masters"`
 }
 
+// PutRequest input
+type PutRequest struct {
+	// ItemMasters 商品リスト
+	ItemMasters []ItemMaster `json:"item_masters"`
+}
+
+// PutResponce output
+type PutResponce struct {
+}
+
 // ItemMaster リクエストの出力パラメータ
 type ItemMaster struct {
+	// ユーザID
+	UserID string `json:"user_id"`
 	// グループID
 	GroupID string `json:"group_id"`
 	// 商品ID
@@ -37,8 +51,9 @@ type ItemMaster struct {
 }
 
 // NewItemMaster construtor
-func NewItemMaster(groupID string, productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
+func NewItemMaster(userID string, groupID string, productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
 	return ItemMaster{
+		UserID:         userID,
 		GroupID:        groupID,
 		ProductID:      productID,
 		StoreType:      storeType,

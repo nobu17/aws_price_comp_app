@@ -3,6 +3,7 @@ package services
 // ServiceImpl service interface
 type ServiceImpl interface {
 	GetItemMasters(req InputModel) (OutputModel, error)
+	PutItemMasters(req PutInputModel) (PutOutputModel, error)
 }
 
 // InputModel input
@@ -19,8 +20,20 @@ type OutputModel struct {
 	ItemMasters []ItemMaster
 }
 
+// PutInputModel input
+type PutInputModel struct {
+	// ItemMasters 商品リスト
+	ItemMasters []ItemMaster
+}
+
+// PutOutputModel output
+type PutOutputModel struct {
+}
+
 // ItemMaster リクエストの出力パラメータ
 type ItemMaster struct {
+	// ユーザID
+	UserID string
 	// グループID
 	GroupID string
 	// 商品ID
@@ -34,8 +47,9 @@ type ItemMaster struct {
 }
 
 // NewItemMaster construtor
-func NewItemMaster(groupID string, productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
+func NewItemMaster(userID string, groupID string, productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
 	return ItemMaster{
+		UserID:         userID,
 		GroupID:        groupID,
 		ProductID:      productID,
 		StoreType:      storeType,

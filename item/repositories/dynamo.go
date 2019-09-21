@@ -26,6 +26,8 @@ func NewDynamoRepository(logger log.LoggerImpl) ItemMasterImpl {
 
 // itemMaster リクエストの出力パラメータ
 type itemMaster struct {
+	// ユーザID
+	UserID string `dynamo:"user_id"`
 	// グループID
 	GroupID string `dynamo:"group_id"`
 	// 商品ID
@@ -36,6 +38,21 @@ type itemMaster struct {
 	ThretholdPrice int `dynamo:"threthold_price"`
 	// アイテム名
 	ItemName string `dynamo:"item_name"`
+	// アイテム名
+	UniqueID string `dynamo:"unique_id"`
+}
+
+// NewitemMaster construtor
+func NewitemMaster(userID string, groupID string, productID string, storeType string, thretholdPrice int, itemName string) itemMaster {
+	return itemMaster{
+		UserID:         userID,
+		GroupID:        groupID,
+		ProductID:      productID,
+		StoreType:      storeType,
+		ThretholdPrice: thretholdPrice,
+		ItemName:       itemName,
+		UniqueID:       storeType + "_" + productID,
+	}
 }
 
 // GetItemMaster dynamoimpl
@@ -49,10 +66,37 @@ func (u *dynamoRepository) GetItemMaster(req Request) (Responce, error) {
 	}
 	var list = make([]ItemMaster, 0)
 	for _, item := range items {
-		var t = NewItemMaster(item.GroupID, item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName)
+		var t = NewItemMaster(item.UserID, item.GroupID, item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName)
 		list = append(list, t)
 	}
 	return Responce{ItemMasters: list}, nil
+}
+
+// PutItemMaster dynamoimpl
+func (u *dynamoRepository) PutItemMaster(req PutRequest) (PutResponce, error) {
+	u.logger.LogWrite(log.Info, "start PutItemMaster")
+	var batchSize = len(req.ItemMasters)
+	var list = make([]interface{}, batchSize)
+	for i := 0; i < batchSize; i++ {
+		var item = req.ItemMasters[i]
+		var t = NewitemMaster(item.UserID, item.GroupID, item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName)
+		list[i] = t
+	}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "batch insert", list)
+
+	table := u.getTable()
+	batch := table.Batch().Write().Put(list...)
+	wrote, err := batch.Run()
+	if err != nil {
+		u.logger.LogWrite(log.Error, "error:"+fmt.Sprint(err))
+		u.logger.LogWrite(log.Info, "end PutItemMaster")
+		return PutResponce{Wrote: wrote}, err
+	}
+	if len(req.ItemMasters) != wrote {
+		u.logger.LogWrite(log.Error, fmt.Sprintf("some wrote is failed. Total:%v Success:%v", len(req.ItemMasters), wrote))
+	}
+	u.logger.LogWrite(log.Info, "end PutItemMaster")
+	return PutResponce{Wrote: wrote}, err
 }
 
 func (u *dynamoRepository) getTable() dynamo.Table {

@@ -17,6 +17,13 @@ func HandleItemMaster(request controllers.Request) (interface{}, error) {
 		}
 		return res, nil
 	}
+	if request.Method == "put" {
+		res, err := contoller.PutItemMaster(request.PutRequest)
+		if err != nil {
+			return res, err
+		}
+		return res, nil
+	}
 	return nil, errors.New("Not match method")
 }
 
