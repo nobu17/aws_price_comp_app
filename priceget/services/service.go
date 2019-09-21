@@ -56,7 +56,7 @@ func (u *productService) GetProductInfo(req InputProductModel) (OutputProductMod
 		if err != nil {
 			failList = append(failList, ProductInfo{ProductID: res.ProductID, StoreType: prod.StoreType, Price: res.Price, ShippingFee: res.ShippingFee, IsSoldOut: res.IsSoldOut})
 		} else {
-			list = append(list, ProductInfo{ProductID: res.ProductID, Price: res.Price, ShippingFee: res.ShippingFee, IsSoldOut: res.IsSoldOut})
+			list = append(list, ProductInfo{ProductID: res.ProductID, StoreType: prod.StoreType, Price: res.Price, ShippingFee: res.ShippingFee, IsSoldOut: res.IsSoldOut})
 		}
 	}
 	output := OutputProductModel{ProductInfoList: list, FailProductInfoList: failList}
