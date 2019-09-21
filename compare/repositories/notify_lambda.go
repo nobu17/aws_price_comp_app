@@ -38,6 +38,8 @@ func (u *notifyLambdaRepositories) SendNotify(req NotifyPutRequest) (NotifyPutRe
 		u.logger.LogWrite(log.Error, "lambda call is failed"+fmt.Sprint(err))
 		return NotifyPutResponce{}, err
 	}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "lambda result:", *res)
+	u.logger.LogWrite(log.Info, "lambda payload:"+string(res.Payload))
 	if *res.StatusCode != 200 {
 		u.logger.LogWrite(log.Error, "lambda call StatusCode is not 200"+fmt.Sprint(*res.StatusCode))
 		return NotifyPutResponce{}, errors.New("lambda call StatusCode is not 200" + fmt.Sprint(*res.StatusCode))

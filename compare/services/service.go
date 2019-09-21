@@ -124,16 +124,20 @@ func (u *compareService) sendNotifyAndPutAlertLog(input InputModel, notifies []r
 		return err
 	}
 	u.logger.LogWrite(log.Info, "end SendNotify")
+	u.logger.LogWrite(log.Info, "start PutAlerts")
 	// put alert log if successed
 	var sendlist = make([]repositories.SendAlertLog, 0)
 	for _, item := range notifies {
 		sendlist = append(sendlist, repositories.NewSendAlertLog(input.UserID, util.GetJSTTimeStr(0), item.StoreType, item.ProductID, (item.Price+item.ShippingFee)))
 	}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start PutAlerts", sendlist)
 	_, err = u.alertRepository.PutAlerts(repositories.AlertPutRequest{PutAlertList: sendlist})
 	if err != nil {
 		u.logger.LogWrite(log.Error, "PutAlerts is failed:"+fmt.Sprint(err))
 		return err
 	}
+	u.logger.LogWrite(log.Info, "end PutAlerts")
+	u.logger.LogWrite(log.Info, "end sendNotifyAndPutAlertLog")
 	return nil
 }
 

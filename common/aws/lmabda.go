@@ -2,6 +2,7 @@ package aws
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -30,5 +31,10 @@ func callLambda(invokeType string, funcName string, region string, payload inter
 
 	client := lambda.New(sess, &aws.Config{Region: aws.String(region)})
 	result, err := client.Invoke(&lambda.InvokeInput{FunctionName: aws.String(funcName), Payload: jsonBytes, InvocationType: aws.String(invokeType)})
+
+	if *result.FunctionError != "" {
+		return result, errors.New("function error:" + *result.FunctionError)
+	}
+
 	return result, err
 }

@@ -54,17 +54,20 @@ func (u *alertambdaRepositories) GetAlerts(req AlertGetRequest) (AlertGetResponc
 
 // PutAlerts get alert info.
 func (u *alertambdaRepositories) PutAlerts(req AlertPutRequest) (AlertPutResponce, error) {
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start alertambdaRepositories:PutAlerts", req)
 	region := os.Getenv(envRegionKey)
 	if region == "" {
 		region = defaultRegion
 	}
 
 	param := alertLambdaParam{Method: "put", PutParam: req}
-	res, err := aws.CallLambdaWithSync(ifuncName, region, param)
+	res, err := aws.CallLambdaWithSync(afuncName, region, param)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "lambda call is failed"+fmt.Sprint(err))
 		return AlertPutResponce{}, err
 	}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "lambda result:", *res)
+	u.logger.LogWrite(log.Info, "lambda payload:"+string(res.Payload))
 	if *res.StatusCode != 200 {
 		u.logger.LogWrite(log.Error, "lambda call StatusCode is not 200"+fmt.Sprint(*res.StatusCode))
 		return AlertPutResponce{}, errors.New("lambda call StatusCode is not 200" + fmt.Sprint(*res.StatusCode))
@@ -75,5 +78,6 @@ func (u *alertambdaRepositories) PutAlerts(req AlertPutRequest) (AlertPutResponc
 		u.logger.LogWrite(log.Error, "json Unmarshal is failed"+fmt.Sprint(err))
 		return AlertPutResponce{}, err
 	}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "end alertambdaRepositories:PutAlerts", responce)
 	return responce, nil
 }
