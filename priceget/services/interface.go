@@ -37,6 +37,8 @@ type OutputProductModel struct {
 type ProductInfo struct {
 	// 商品ID
 	ProductID string
+	// 商品type
+	StoreType string
 	// 価格
 	Price int
 	// 送料

@@ -26,6 +26,8 @@ type Responce struct {
 type ProductInfo struct {
 	// 商品ID
 	ProductID string `json:"product_id"`
+	// 商品type
+	StoreType string `json:"store_type"`
 	// 価格
 	Price int `json:"price"`
 	// 送料

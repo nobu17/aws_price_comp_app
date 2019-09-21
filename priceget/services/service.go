@@ -54,7 +54,7 @@ func (u *productService) GetProductInfo(req InputProductModel) (OutputProductMod
 		u.repository = repository
 		res, err := u.repository.GetProductPrice(repositories.Request{ProductID: prod.ProductID})
 		if err != nil {
-			failList = append(failList, ProductInfo{ProductID: res.ProductID, Price: res.Price, ShippingFee: res.ShippingFee, IsSoldOut: res.IsSoldOut})
+			failList = append(failList, ProductInfo{ProductID: res.ProductID, StoreType: prod.StoreType, Price: res.Price, ShippingFee: res.ShippingFee, IsSoldOut: res.IsSoldOut})
 		} else {
 			list = append(list, ProductInfo{ProductID: res.ProductID, Price: res.Price, ShippingFee: res.ShippingFee, IsSoldOut: res.IsSoldOut})
 		}
