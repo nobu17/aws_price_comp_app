@@ -145,22 +145,32 @@ func (u *compareService) filterPastSentItems(userID string, req []repositories.N
 		return nil, err
 	}
 	u.logger.LogWriteWithMsgAndObj(log.Info, "get alert list:", res)
+
 	var targets = make([]repositories.NotifyProductInfo, 0)
-	for _, alert := range res.SendAlertList {
-		// if match product id, comapre price
-		var prod = getAlertProduc(alert.ProductID, alert.StoreType, req)
-		if prod != nil {
+	for _, notifyItem := range req {
+		// if alert item is match
+		var alertedItem = getAlertProduct(notifyItem.ProductID, notifyItem.StoreType, res.SendAlertList)
+		if alertedItem != nil {
 			// if more cheper than before alert it should alert
-			if (prod.Price + prod.ShippingFee) < alert.Price {
-				u.logger.LogWriteWithMsgAndObj(log.Info, "get over threthold:", prod)
-				targets = append(targets, *prod)
+			if (notifyItem.Price + notifyItem.ShippingFee) > alertedItem.Price {
+				u.logger.LogWriteWithMsgAndObj(log.Info, "not get over threthold:", notifyItem)
 				continue
 			}
-			u.logger.LogWriteWithMsgAndObj(log.Info, "not get over threthold:", prod)
 		}
+		u.logger.LogWriteWithMsgAndObj(log.Info, "get over threthold:", notifyItem)
+		targets = append(targets, notifyItem)
 	}
 	u.logger.LogWriteWithMsgAndObj(log.Info, "get over threthold list:", targets)
 	return targets, nil
+}
+
+func getAlertProduct(ProductID string, storeType string, masters []repositories.SendAlertLog) *repositories.SendAlertLog {
+	for _, item := range masters {
+		if (item.ProductID == ProductID) && (item.StoreType == storeType) {
+			return &item
+		}
+	}
+	return nil
 }
 
 func getAlertProduc(prdouctID string, storeType string, masters []repositories.NotifyProductInfo) *repositories.NotifyProductInfo {
