@@ -20,8 +20,8 @@ type InputModel struct {
 }
 
 // NewInputModel constructor
-func NewInputModel(userID, groupID, groupName string) InputModel {
-	return InputModel{UserID: userID, GroupID: groupID, GroupName: groupName}
+func NewInputModel(userID, userName, groupID, groupName, mail string) InputModel {
+	return InputModel{UserID: userID, UserName: userName, Mail: mail, GroupID: groupID, GroupName: groupName}
 }
 
 // OutputModel input
