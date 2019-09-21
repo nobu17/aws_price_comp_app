@@ -52,11 +52,11 @@ func getConvertInput(req Request) services.InputProductModel {
 func getConvertOutput(output services.OutputProductModel) Responce {
 	prods := make([]ProductInfo, 0)
 	for _, prod := range output.ProductInfoList {
-		prods = append(prods, ProductInfo{ProductID: prod.ProductID, Price: prod.Price, ShippingFee: prod.ShippingFee, IsSoldOut: prod.IsSoldOut})
+		prods = append(prods, ProductInfo{ProductID: prod.ProductID, StoreType: prod.StoreType, Price: prod.Price, ShippingFee: prod.ShippingFee, IsSoldOut: prod.IsSoldOut})
 	}
 	fprods := make([]ProductInfo, 0)
 	for _, prod := range output.FailProductInfoList {
-		fprods = append(fprods, ProductInfo{ProductID: prod.ProductID, Price: prod.Price, ShippingFee: prod.ShippingFee, IsSoldOut: prod.IsSoldOut})
+		fprods = append(fprods, ProductInfo{ProductID: prod.ProductID, StoreType: prod.StoreType, Price: prod.Price, ShippingFee: prod.ShippingFee, IsSoldOut: prod.IsSoldOut})
 	}
 	return Responce{ProductInfoList: prods, FailProductInfoList: fprods}
 }
