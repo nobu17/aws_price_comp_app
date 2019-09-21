@@ -173,15 +173,6 @@ func getAlertProduct(ProductID string, storeType string, masters []repositories.
 	return nil
 }
 
-func getAlertProduc(prdouctID string, storeType string, masters []repositories.NotifyProductInfo) *repositories.NotifyProductInfo {
-	for _, item := range masters {
-		if (item.ProductID == prdouctID) && (item.StoreType == storeType) {
-			return &item
-		}
-	}
-	return nil
-}
-
 func getProduct(prdouctID string, storeType string, masters []repositories.ItemMaster) *repositories.ItemMaster {
 	for _, item := range masters {
 		if (item.ProductID == prdouctID) && (item.StoreType == storeType) {
