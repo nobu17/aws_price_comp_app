@@ -25,7 +25,7 @@ func NewCompareService(logger log.LoggerImpl,
 	itemRepository repositories.ItemImpl,
 	priceRepository repositories.PriceImpl,
 	notifyRepository repositories.NotifyImpl) ServiceImpl {
-	return &compareService{logger: logger, itemRepository: itemRepository, priceRepository: priceRepository, notifyRepository: notifyRepository}
+	return &compareService{logger: logger, alertRepository: alertRepository, itemRepository: itemRepository, priceRepository: priceRepository, notifyRepository: notifyRepository}
 }
 
 func (u *compareService) StartCompare(req InputModel) (OutputModel, error) {
