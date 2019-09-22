@@ -16,7 +16,8 @@ func (u *Container) NewService() services.ServiceImpl {
 	logger := u.NewLogger()
 	aRepo := repositories.NewAmazonMakertRepository(logger)
 	sRepo := repositories.NewSurugayaRepository(logger)
-	factory := factories.NewRepsoitoryFactrory(aRepo, sRepo)
+	bRepo := repositories.NewBookoffRepository(logger)
+	factory := factories.NewRepsoitoryFactrory(aRepo, sRepo, bRepo)
 	serv := services.NewProductService(factory, logger)
 
 	return serv

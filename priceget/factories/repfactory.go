@@ -11,13 +11,16 @@ import (
 type repsoitoryFactrory struct {
 	amaRepsotiroy     repositories.GetProductPriceImpl
 	surugayaRepsitory repositories.GetProductPriceImpl
+	boffRepsotiroy    repositories.GetProductPriceImpl
 }
 
 // NewRepsoitoryFactrory constructor
-func NewRepsoitoryFactrory(amaRepsotiroy repositories.GetProductPriceImpl, surugayaRepsitory repositories.GetProductPriceImpl) FactoryImpl {
+func NewRepsoitoryFactrory(amaRepsotiroy, surugayaRepsitory, boffRepsotiroy repositories.GetProductPriceImpl) FactoryImpl {
 	return &repsoitoryFactrory{
 		amaRepsotiroy:     amaRepsotiroy,
-		surugayaRepsitory: surugayaRepsitory}
+		surugayaRepsitory: surugayaRepsitory,
+		boffRepsotiroy:    boffRepsotiroy,
+	}
 }
 
 // GetPriceGetRepository implimation
@@ -30,6 +33,9 @@ func (u *repsoitoryFactrory) GetPriceGetRepository(storeType string) (repositori
 	}
 	if info.IsStoreTypeSurugaya(storeType) {
 		return u.surugayaRepsitory, nil
+	}
+	if info.IsStoreTypeBookoff(storeType) {
+		return u.boffRepsotiroy, nil
 	}
 	return nil, errors.New("no match store type:" + storeType)
 }
