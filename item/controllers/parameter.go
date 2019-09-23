@@ -8,6 +8,8 @@ type Request struct {
 	GetRequest GetRequest `json:"get_param"`
 	// PutRequest method put case getparam
 	PutRequest PutRequest `json:"put_param"`
+	// DeleteRequest method put case delparam
+	DeleteRequest DeleteRequest `json:"delete_param"`
 }
 
 // GetRequest input
@@ -20,12 +22,20 @@ type GetRequest struct {
 
 // GetResponce output
 type GetResponce struct {
+	// ユーザーID
+	UserID string `json:"user_id"`
+	// グループID
+	GroupID string `json:"group_id"`
 	// ItemMasters 商品リスト
 	ItemMasters []ItemMaster `json:"item_masters"`
 }
 
 // PutRequest input
 type PutRequest struct {
+	// ユーザーID
+	UserID string `json:"user_id"`
+	// グループID
+	GroupID string `json:"group_id"`
 	// ItemMasters 商品リスト
 	ItemMasters []ItemMaster `json:"item_masters"`
 }
@@ -34,12 +44,20 @@ type PutRequest struct {
 type PutResponce struct {
 }
 
-// ItemMaster リクエストの出力パラメータ
-type ItemMaster struct {
-	// ユーザID
+// DeleteRequest input
+type DeleteRequest struct {
+	// ユーザーID
 	UserID string `json:"user_id"`
 	// グループID
 	GroupID string `json:"group_id"`
+}
+
+// DeleteResponce output
+type DeleteResponce struct {
+}
+
+// ItemMaster リクエストの出力パラメータ
+type ItemMaster struct {
 	// 商品ID
 	ProductID string `json:"product_id"`
 	// 店鋪種類
@@ -51,10 +69,8 @@ type ItemMaster struct {
 }
 
 // NewItemMaster construtor
-func NewItemMaster(userID string, groupID string, productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
+func NewItemMaster(productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
 	return ItemMaster{
-		UserID:         userID,
-		GroupID:        groupID,
 		ProductID:      productID,
 		StoreType:      storeType,
 		ThretholdPrice: thretholdPrice,

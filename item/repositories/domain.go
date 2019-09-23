@@ -4,6 +4,7 @@ package repositories
 type ItemMasterImpl interface {
 	GetItemMaster(req Request) (Responce, error)
 	PutItemMaster(req PutRequest) (PutResponce, error)
+	DeleteItemMaster(req DeleteRequest) (DeleteResponce, error)
 }
 
 // Request リクエスト入力パラメータ
@@ -16,28 +17,42 @@ type Request struct {
 
 // Responce result
 type Responce struct {
+	// ユーザーID
+	UserID string
+	// グループID
+	GroupID string
 	// ItemMasters 商品リスト
 	ItemMasters []ItemMaster
 }
 
 // PutRequest リクエスト入力パラメータ
 type PutRequest struct {
+	// ユーザーID
+	UserID string
+	// グループID
+	GroupID string
 	// ItemMasters 商品リスト
 	ItemMasters []ItemMaster
 }
 
 // PutResponce result
 type PutResponce struct {
-	// 書き込み数
-	Wrote int
+}
+
+// DeleteRequest delete req.
+type DeleteRequest struct {
+	// ユーザーID
+	UserID string
+	// グループID
+	GroupID string
+}
+
+// DeleteResponce result
+type DeleteResponce struct {
 }
 
 // ItemMaster リクエストの出力パラメータ
 type ItemMaster struct {
-	// ユーザID
-	UserID string
-	// グループID
-	GroupID string
 	// 商品ID
 	ProductID string
 	// 店鋪種類
@@ -49,10 +64,8 @@ type ItemMaster struct {
 }
 
 // NewItemMaster construtor
-func NewItemMaster(userID string, groupID string, productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
+func NewItemMaster(productID string, storeType string, thretholdPrice int, itemName string) ItemMaster {
 	return ItemMaster{
-		UserID:         userID,
-		GroupID:        groupID,
 		ProductID:      productID,
 		StoreType:      storeType,
 		ThretholdPrice: thretholdPrice,

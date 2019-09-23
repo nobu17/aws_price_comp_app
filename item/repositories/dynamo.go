@@ -24,12 +24,17 @@ func NewDynamoRepository(logger log.LoggerImpl) ItemMasterImpl {
 	return &dynamoRepository{logger: logger}
 }
 
-// itemMaster リクエストの出力パラメータ
-type itemMaster struct {
+type itemRecord struct {
 	// ユーザID
 	UserID string `dynamo:"user_id"`
 	// グループID
 	GroupID string `dynamo:"group_id"`
+	// item list
+	ItemList []itemMaster `dynamo:"item_list"`
+}
+
+// itemMaster リクエストの出力パラメータ
+type itemMaster struct {
 	// 商品ID
 	ProductID string `dynamo:"product_id"`
 	// 店鋪種類
@@ -38,65 +43,68 @@ type itemMaster struct {
 	ThretholdPrice int `dynamo:"threthold_price"`
 	// アイテム名
 	ItemName string `dynamo:"item_name"`
-	// アイテム名
-	UniqueID string `dynamo:"unique_id"`
 }
 
 // NewitemMaster construtor
-func NewitemMaster(userID string, groupID string, productID string, storeType string, thretholdPrice int, itemName string) itemMaster {
+func NewitemMaster(productID string, storeType string, thretholdPrice int, itemName string) itemMaster {
 	return itemMaster{
-		UserID:         userID,
-		GroupID:        groupID,
 		ProductID:      productID,
 		StoreType:      storeType,
 		ThretholdPrice: thretholdPrice,
 		ItemName:       itemName,
-		UniqueID:       storeType + "_" + productID,
 	}
 }
 
 // GetItemMaster dynamoimpl
 func (u *dynamoRepository) GetItemMaster(req Request) (Responce, error) {
-	var items []itemMaster
+	var userItem itemRecord
 	table := u.getTable()
-	err := table.Get("user_id", req.UserID).Filter("group_id = ?", req.GroupID).All(&items) // Range("group_id", dynamo.Equal, req.GroupID).All(&items)
+	err := table.Get("user_id", req.UserID).Range("group_id", dynamo.Equal, req.GroupID).One(&userItem)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "table.Get Error"+fmt.Sprint(err))
 		return Responce{}, err
 	}
 	var list = make([]ItemMaster, 0)
-	for _, item := range items {
-		var t = NewItemMaster(item.UserID, item.GroupID, item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName)
+	for _, item := range userItem.ItemList {
+		var t = NewItemMaster(item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName)
 		list = append(list, t)
 	}
-	return Responce{ItemMasters: list}, nil
+	return Responce{UserID: userItem.UserID, GroupID: userItem.GroupID, ItemMasters: list}, nil
 }
 
 // PutItemMaster dynamoimpl
 func (u *dynamoRepository) PutItemMaster(req PutRequest) (PutResponce, error) {
 	u.logger.LogWrite(log.Info, "start PutItemMaster")
-	var batchSize = len(req.ItemMasters)
-	var list = make([]interface{}, batchSize)
-	for i := 0; i < batchSize; i++ {
-		var item = req.ItemMasters[i]
-		var t = NewitemMaster(item.UserID, item.GroupID, item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName)
-		list[i] = t
+
+	var list = make([]itemMaster, 0)
+	for _, item := range req.ItemMasters {
+		var t = NewitemMaster(item.ProductID, item.StoreType, item.ThretholdPrice, item.ItemName)
+		list = append(list, t)
 	}
-	u.logger.LogWriteWithMsgAndObj(log.Info, "batch insert", list)
+	var input = itemRecord{UserID: req.UserID, GroupID: req.GroupID, ItemList: list}
+	u.logger.LogWriteWithMsgAndObj(log.Info, "put", input)
 
 	table := u.getTable()
-	batch := table.Batch().Write().Put(list...)
-	wrote, err := batch.Run()
+	err := table.Put(input).Run()
+
 	if err != nil {
 		u.logger.LogWrite(log.Error, "error:"+fmt.Sprint(err))
 		u.logger.LogWrite(log.Info, "end PutItemMaster")
-		return PutResponce{Wrote: wrote}, err
-	}
-	if len(req.ItemMasters) != wrote {
-		u.logger.LogWrite(log.Error, fmt.Sprintf("some wrote is failed. Total:%v Success:%v", len(req.ItemMasters), wrote))
+		return PutResponce{}, err
 	}
 	u.logger.LogWrite(log.Info, "end PutItemMaster")
-	return PutResponce{Wrote: wrote}, err
+	return PutResponce{}, nil
+}
+
+// DeleteItemMaster dynamo impl
+func (u *dynamoRepository) DeleteItemMaster(req DeleteRequest) (DeleteResponce, error) {
+	table := u.getTable()
+	err := table.Delete("user_id", req.UserID).Range("group_id", req.GroupID).Run()
+	if err != nil {
+		u.logger.LogWrite(log.Error, "table.Del Error"+fmt.Sprint(err))
+		return DeleteResponce{}, err
+	}
+	return DeleteResponce{}, nil
 }
 
 func (u *dynamoRepository) getTable() dynamo.Table {
@@ -108,6 +116,6 @@ func (u *dynamoRepository) getTable() dynamo.Table {
 	db := dynamo.New(session.New(), &aws.Config{
 		Region: aws.String(region),
 	})
-	table := db.Table("ItemObserveMaster")
+	table := db.Table("ItemMaster")
 	return table
 }
