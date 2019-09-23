@@ -80,7 +80,6 @@ func (u *ItemMasterController) PutItemMaster(req PutRequest) (PutResponce, error
 	return PutResponce{}, nil
 }
 
-
 // DeleteItemMaster getitem
 func (u *ItemMasterController) DeleteItemMaster(req DeleteRequest) (DeleteResponce, error) {
 	u.logger.LogWriteWithMsgAndObj(log.Info, "start DeleteItemMaster", req)
@@ -113,6 +112,12 @@ func (u *ItemMasterController) validatePut(req PutRequest) error {
 	}
 	if req.ItemMasters == nil || len(req.ItemMasters) == 0 {
 		return errors.New("ItemMasters is empty")
+	}
+	if len(req.ItemMasters) == 0 {
+		return errors.New("ItemMasters should be greater than 0")
+	}
+	if len(req.ItemMasters) > 20 {
+		return errors.New("ItemMasters length should be less than 20")
 	}
 	dup := make(map[string]string)
 	for _, item := range req.ItemMasters {
