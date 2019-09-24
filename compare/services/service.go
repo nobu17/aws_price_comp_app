@@ -52,7 +52,7 @@ func (u *compareService) StartCompare(req InputModel) (OutputModel, error) {
 				notifyTargets = append(notifyTargets, target)
 				continue
 			}
-			u.logger.LogWrite(log.Info, fmt.Sprintf("not over threthould: ID:%v current:%v, threthod:%v", price.ProductID, (price.Price+price.ShippingFee), prod.ThretholdPrice))
+			u.logger.LogWrite(log.Info, fmt.Sprintf("not over threthould: ID:%v current:%v, threthod:%v, item:%v", price.ProductID, (price.Price+price.ShippingFee), prod.ThretholdPrice, prod.ItemName))
 		}
 	}
 
