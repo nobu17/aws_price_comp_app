@@ -3,6 +3,7 @@ package services
 // ServiceImpl service interface
 type ServiceImpl interface {
 	GetUserInfo(req GetInputModel) (GetOutputModel, error)
+	DeleteItemGroup(req DeleteInputModel) (DeleteOutputModel, error)
 }
 
 // GetInputModel input
@@ -25,7 +26,6 @@ type GetOutputModel struct {
 	// アイテムグループのマスタ
 	ItemGroupList []ItemGroup
 }
-
 
 // UserInfo user information
 type UserInfo struct {
@@ -53,4 +53,32 @@ type ItemGroup struct {
 // NewItemGroup constructor
 func NewItemGroup(groupID string, groupName string) ItemGroup {
 	return ItemGroup{GroupID: groupID, GroupName: groupName}
+}
+
+// DeleteInputModel リクエスト入力パラメータ
+type DeleteInputModel struct {
+	// ユーザーID
+	UserID string
+	// GroupIDs
+	GroupIDList []string
+}
+
+// NewDeleteInputModel constructor
+func NewDeleteInputModel(userID string, groupIDList []string) DeleteInputModel {
+	return DeleteInputModel{UserID: userID, GroupIDList: groupIDList}
+}
+
+// DeleteOutputModel リクエスト出力パラメータ
+type DeleteOutputModel struct {
+	// 削除失敗したアイテムグループのマスタ
+	SuccessItemGroupList []string
+	// 削除失敗したアイテムグループのマスタ
+	FailedDeleteGroupList []string
+	// 削除失敗したアイテムのマスタ
+	FailedDeleteItemList []string
+}
+
+// NewDeleteOutputModel constructor
+func NewDeleteOutputModel(successItemGroupList, failedDeleteGroupList, failedDeleteItemList []string) DeleteOutputModel {
+	return DeleteOutputModel{SuccessItemGroupList: successItemGroupList, FailedDeleteGroupList: failedDeleteGroupList, FailedDeleteItemList: failedDeleteItemList}
 }

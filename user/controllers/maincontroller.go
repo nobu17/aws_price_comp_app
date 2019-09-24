@@ -56,6 +56,55 @@ func (u *UserController) GetUserInfo(req GetRequest) (GetResponce, error) {
 	return respo, nil
 }
 
+
+// DeleteItemGroup delete group for specified user user
+func (u *UserController) DeleteItemGroup(req DeleteGroupRequest) (DeleteGroupResponce, error) {
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start UserController:DeleteItemGroup", req)
+
+	err := u.validateDeleteGroupReq(req)
+	if err != nil {
+		u.logger.LogWrite(log.Info, "input error:"+fmt.Sprint(err))
+		u.logger.LogWrite(log.Info, "end UserController:DeleteItemGroup")
+		return DeleteGroupResponce{}, err
+	}
+
+	var inputModel = services.NewDeleteInputModel(req.UserID, req.GroupIDList)
+	res, err := u.service.DeleteItemGroup(inputModel)
+	if err != nil {
+		u.logger.LogWrite(log.Info, "servie error:"+fmt.Sprint(err))
+		u.logger.LogWrite(log.Info, "end UserController:DeleteItemGroup")
+		return DeleteGroupResponce{}, err
+	}
+
+	var respo = NewDeleteGroupResponce(res.SuccessItemGroupList, res.FailedDeleteGroupList, res.FailedDeleteItemList)
+	u.logger.LogWriteWithMsgAndObj(log.Info, "end UserController:DeleteItemGroup:", respo)
+	return respo, nil
+}
+
+func (u *UserController) validateDeleteGroupReq(req DeleteGroupRequest) error {
+	if req.UserID == "" || strings.TrimSpace(req.UserID) == "" {
+		return errors.New("UserID is empty")
+	}
+	if req.GroupIDList == nil || len(req.GroupIDList) == 0 {
+		return errors.New("GroupIDList is empty")
+	}
+	// dupicated check
+	dup := make(map[string]string)
+	for _, item := range req.GroupIDList {
+		if(strings.TrimSpace(item) == "") {
+			return errors.New("empty groupID is included")
+		}
+		_, existed := dup[item]
+		if existed {
+			return errors.New("Same Product ID set:" + item)
+		}
+		dup[item] = ""
+	}
+
+	return nil
+}
+
+
 func (u *UserController) validateGetReq(req GetRequest) error {
 	if req.UserID == "" || strings.TrimSpace(req.UserID) == "" {
 		return errors.New("UserID is empty")

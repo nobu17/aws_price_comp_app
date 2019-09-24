@@ -3,6 +3,11 @@ package repositories
 // UserInfoImpl interface of user repository
 type UserInfoImpl interface {
 	GetUserInfo(req GetRequest) (GetResponce, error)
+	DeleteItemGroup(req DeleteItemGroupRequest) (DeleteItemGroupResponce, error)
+}
+// GroupInfoImpl interface of user repository
+type GroupInfoImpl interface {
+	DeleteItemGroup(req DeleteItemGroupRequest) (DeleteItemGroupResponce, error)
 }
 
 // GetRequest リクエスト入力パラメータ
@@ -39,6 +44,27 @@ type UserInfo struct {
 // NewUserInfo constructor
 func NewUserInfo(userID string, name string, mail string) UserInfo {
 	return UserInfo{UserID: userID, Name: name, Mail: mail}
+}
+
+// DeleteItemGroupRequest リクエスト入力パラメータ
+type DeleteItemGroupRequest struct {
+	// ユーザーID
+	UserID string
+	// GroupIDs
+	GroupIDList []string
+}
+
+// NewDeleteItemGroupRequest constructor
+func NewDeleteItemGroupRequest(userID string, groupIDList []string) DeleteItemGroupRequest {
+	return DeleteItemGroupRequest{UserID: userID, GroupIDList: groupIDList}
+}
+
+// DeleteItemGroupResponce リクエスト出力パラメータ
+type DeleteItemGroupResponce struct {
+	// 削除失敗したアイテムグループのマスタ
+	SuccessItemGroupList []string
+	// 削除失敗したアイテムグループのマスタ
+	FailedItemGroupList []string
 }
 
 // ItemGroup アイテムマスタのグループ情報

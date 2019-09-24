@@ -80,6 +80,23 @@ func (u *dynamoRepository) GetUserInfo(req GetRequest) (GetResponce, error) {
 	return GetResponce{UserInfo: NewUserInfo(users[0].UserID, users[0].Name, users[0].Mail), ItemGroupList: list}, nil
 }
 
+// DeleteItemGroup impl
+func (u *dynamoRepository) DeleteItemGroup(req DeleteItemGroupRequest) (DeleteItemGroupResponce, error) {
+	table := u.getItemGroup()
+	var successGroups = make([]string, 0)
+	var faileGroups = make([]string, 0)
+	for _, group := range req.GroupIDList {
+		err := table.Delete("user_id", req.UserID).Range("group_id", group).Run()
+		if err != nil {
+			u.logger.LogWrite(log.Error, "table.Del Error"+fmt.Sprint(err))
+			faileGroups = append(faileGroups, group)
+			continue
+		}
+		successGroups = append(successGroups, group)
+	}
+	return DeleteItemGroupResponce{SuccessItemGroupList: successGroups, FailedItemGroupList: faileGroups}, nil
+}
+
 func (u *dynamoRepository) getUserTable() dynamo.Table {
 	db := u.getDB()
 	table := db.Table("UserMaster")

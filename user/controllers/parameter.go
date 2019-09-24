@@ -6,6 +6,8 @@ type Request struct {
 	Method string `json:"method"`
 	// GetParam
 	GetRequest GetRequest `json:"get_param"`
+	// DeleteParam
+	DeleteGroupRequest DeleteGroupRequest `json:"delete_group_param"`
 }
 
 // GetRequest リクエスト入力パラメータ
@@ -55,4 +57,27 @@ type ItemGroup struct {
 // NewItemGroup constructor
 func NewItemGroup(groupID string, groupName string) ItemGroup {
 	return ItemGroup{GroupID: groupID, GroupName: groupName}
+}
+
+// DeleteGroupRequest リクエスト入力パラメータ
+type DeleteGroupRequest struct {
+	// ユーザーID
+	UserID string
+	// GroupIDs
+	GroupIDList []string
+}
+
+// DeleteGroupResponce リクエスト出力パラメータ
+type DeleteGroupResponce struct {
+	// 削除失敗したアイテムグループのマスタ
+	SuccessItemGroupList []string
+	// 削除失敗したアイテムグループのマスタ
+	FailedDeleteGroupList []string
+	// 削除失敗したアイテムのマスタ
+	FailedDeleteItemList []string
+}
+
+// NewDeleteGroupResponce constructor
+func NewDeleteGroupResponce(successItemGroupList, failedDeleteGroupList, failedDeleteItemList []string) DeleteGroupResponce {
+	return DeleteGroupResponce{SuccessItemGroupList: successItemGroupList, FailedDeleteGroupList: failedDeleteGroupList, FailedDeleteItemList: failedDeleteItemList}
 }

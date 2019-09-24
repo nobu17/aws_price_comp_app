@@ -14,7 +14,8 @@ type Container struct {
 func (u *Container) NewService() services.ServiceImpl {
 	logger := u.NewLogger()
 	repo := repositories.NewDynamoRepository(logger)
-	serv := services.NewUserService(logger, repo)
+	grepo := repositories.NewItemGroupLambdaRepositories(logger)
+	serv := services.NewUserService(logger, repo, grepo)
 
 	return serv
 }

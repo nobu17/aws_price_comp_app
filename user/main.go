@@ -13,7 +13,14 @@ func HandleLambdaEvent(request controllers.Request) (interface{}, error) {
 	if request.Method == "get" {
 		res, err := contoller.GetUserInfo(request.GetRequest)
 		if err != nil {
-			return res, err
+			return nil, err
+		}
+		return res, nil
+	}
+	if request.Method == "delete_group" {
+		res, err := contoller.DeleteItemGroup(request.DeleteGroupRequest)
+		if err != nil {
+			return nil, err
 		}
 		return res, nil
 	}
