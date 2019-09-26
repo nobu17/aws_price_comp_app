@@ -48,6 +48,31 @@ func (u *userService) GetUserInfo(req GetInputModel) (GetOutputModel, error) {
 }
 
 // GetUserInfo impl
+func (u *userService) PutItemGroup(req PutItemGroupInputModel) (PutItemGroupOutputModel, error) {
+	u.logger.LogWriteWithMsgAndObj(log.Info, "start Service:PutItemGroup:", req)
+
+	var itemGroup = make([]repositories.ItemGroup, 0)
+	for _, group := range req.GroupList {
+		itemGroup = append(itemGroup, repositories.NewItemGroup(group.GroupID, group.GroupName))
+	}
+	var input = repositories.PutItemGroupRequest{UserID: req.UserID, GroupList: itemGroup}
+	res, err := u.repository.PutItemGroup(input)
+	if err != nil {
+		u.logger.LogWrite(log.Error, "repository retrun error:"+fmt.Sprint(err))
+		u.logger.LogWrite(log.Info, "end Service:PutItemGroup:")
+		return PutItemGroupOutputModel{}, err
+	}
+	// put a result
+	var output = PutItemGroupOutputModel{}
+	output.SuccessItemGroupList = res.SuccessItemGroupList
+	output.FailedPutGroupList = res.FailedPutGroupList
+
+	u.logger.LogWriteWithMsgAndObj(log.Info, "end Service:DeleteItemGroup:", output)
+
+	return output, nil
+}
+
+// GetUserInfo impl
 func (u *userService) DeleteItemGroup(req DeleteInputModel) (DeleteOutputModel, error) {
 	u.logger.LogWriteWithMsgAndObj(log.Info, "start Service:DeleteItemGroup:", req)
 

@@ -3,6 +3,7 @@ package repositories
 // UserInfoImpl interface of user repository
 type UserInfoImpl interface {
 	GetUserInfo(req GetRequest) (GetResponce, error)
+	PutItemGroup(req PutItemGroupRequest) (PutItemGroupResponce, error)
 	DeleteItemGroup(req DeleteItemGroupRequest) (DeleteItemGroupResponce, error)
 }
 // GroupInfoImpl interface of user repository
@@ -44,6 +45,22 @@ type UserInfo struct {
 // NewUserInfo constructor
 func NewUserInfo(userID string, name string, mail string) UserInfo {
 	return UserInfo{UserID: userID, Name: name, Mail: mail}
+}
+
+// PutItemGroupRequest リクエスト入力パラメータ
+type PutItemGroupRequest struct {
+	// ユーザーID
+	UserID string
+	// GroupIDs
+	GroupList []ItemGroup
+}
+
+// PutItemGroupResponce リクエスト出力パラメータ
+type PutItemGroupResponce struct {
+	// 削除失敗したアイテムグループのマスタ
+	SuccessItemGroupList []string
+	// 削除失敗したアイテムグループのマスタ
+	FailedPutGroupList []string
 }
 
 // DeleteItemGroupRequest リクエスト入力パラメータ

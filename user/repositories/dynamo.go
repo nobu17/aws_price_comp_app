@@ -38,6 +38,8 @@ type userInfo struct {
 // ItemGroup アイテムマスタのグループ情報
 type itemGroup struct {
 	// id
+	UserID string `dynamo:"user_id"`
+	// id
 	GroupID string `dynamo:"group_id"`
 	// name
 	GroupName string `dynamo:"group_name"`
@@ -78,6 +80,24 @@ func (u *dynamoRepository) GetUserInfo(req GetRequest) (GetResponce, error) {
 	}
 
 	return GetResponce{UserInfo: NewUserInfo(users[0].UserID, users[0].Name, users[0].Mail), ItemGroupList: list}, nil
+}
+
+// DeleteItemGroup impl
+func (u *dynamoRepository) PutItemGroup(req PutItemGroupRequest) (PutItemGroupResponce, error) {
+	table := u.getItemGroup()
+	var successGroups = make([]string, 0)
+	var faileGroups = make([]string, 0)
+	for _, group := range req.GroupList {
+		var group = itemGroup{ UserID: req.UserID, GroupID: group.GroupID, GroupName: group.GroupName }
+		err := table.Put(group).Run()
+		if err != nil {
+			u.logger.LogWrite(log.Error, "table.Put Error"+fmt.Sprint(err))
+			faileGroups = append(faileGroups, group.GroupID)
+			continue
+		}
+		successGroups = append(successGroups, group.GroupID)
+	}
+	return PutItemGroupResponce{SuccessItemGroupList: successGroups, FailedPutGroupList: faileGroups}, nil
 }
 
 // DeleteItemGroup impl

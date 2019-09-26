@@ -59,22 +59,39 @@ func NewItemGroup(groupID string, groupName string) ItemGroup {
 	return ItemGroup{GroupID: groupID, GroupName: groupName}
 }
 
+// PutGroupRequest リクエスト入力パラメータ
+type PutGroupRequest struct {
+	// ユーザーID
+	UserID string `json:"user_id"`
+	// GroupIDs
+	GroupList []ItemGroup `json:"group_list"`
+}
+
+// PutGroupResponce リクエスト出力パラメータ
+type PutGroupResponce struct {
+	// 削除失敗したアイテムグループのマスタ
+	SuccessItemGroupList []string `json:"success_group_id_list"`
+	// 削除失敗したアイテムグループのマスタ
+	FailedPutGroupList []string `json:"failed_group_id_list"`
+}
+
+
 // DeleteGroupRequest リクエスト入力パラメータ
 type DeleteGroupRequest struct {
 	// ユーザーID
-	UserID string
+	UserID string `json:"user_id"`
 	// GroupIDs
-	GroupIDList []string
+	GroupIDList []string `json:"group_id_list"`
 }
 
 // DeleteGroupResponce リクエスト出力パラメータ
 type DeleteGroupResponce struct {
 	// 削除失敗したアイテムグループのマスタ
-	SuccessItemGroupList []string
+	SuccessItemGroupList []string  `json:"success_group_id_list"`
 	// 削除失敗したアイテムグループのマスタ
-	FailedDeleteGroupList []string
+	FailedDeleteGroupList []string  `json:"failed_group_id_list"`
 	// 削除失敗したアイテムのマスタ
-	FailedDeleteItemList []string
+	FailedDeleteItemList []string  `json:"failed_item_id_list"`
 }
 
 // NewDeleteGroupResponce constructor
