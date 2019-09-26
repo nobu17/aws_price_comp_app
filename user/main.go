@@ -17,6 +17,13 @@ func HandleLambdaEvent(request controllers.Request) (interface{}, error) {
 		}
 		return res, nil
 	}
+	if request.Method == "put_group" {
+		res, err := contoller.PutItemGroup(request.PutGroupRequest)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+	}
 	if request.Method == "delete_group" {
 		res, err := contoller.DeleteItemGroup(request.DeleteGroupRequest)
 		if err != nil {

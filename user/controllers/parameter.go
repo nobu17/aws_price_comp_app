@@ -8,6 +8,8 @@ type Request struct {
 	GetRequest GetRequest `json:"get_param"`
 	// DeleteParam
 	DeleteGroupRequest DeleteGroupRequest `json:"delete_group_param"`
+	// PutGroupRequest
+	PutGroupRequest PutGroupRequest `json:"put_group_param"`
 }
 
 // GetRequest リクエスト入力パラメータ
@@ -75,7 +77,6 @@ type PutGroupResponce struct {
 	FailedPutGroupList []string `json:"failed_group_id_list"`
 }
 
-
 // DeleteGroupRequest リクエスト入力パラメータ
 type DeleteGroupRequest struct {
 	// ユーザーID
@@ -87,11 +88,11 @@ type DeleteGroupRequest struct {
 // DeleteGroupResponce リクエスト出力パラメータ
 type DeleteGroupResponce struct {
 	// 削除失敗したアイテムグループのマスタ
-	SuccessItemGroupList []string  `json:"success_group_id_list"`
+	SuccessItemGroupList []string `json:"success_group_id_list"`
 	// 削除失敗したアイテムグループのマスタ
-	FailedDeleteGroupList []string  `json:"failed_group_id_list"`
+	FailedDeleteGroupList []string `json:"failed_group_id_list"`
 	// 削除失敗したアイテムのマスタ
-	FailedDeleteItemList []string  `json:"failed_item_id_list"`
+	FailedDeleteItemList []string `json:"failed_item_id_list"`
 }
 
 // NewDeleteGroupResponce constructor
