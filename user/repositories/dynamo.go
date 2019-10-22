@@ -82,7 +82,7 @@ func (u *dynamoRepository) GetUserInfo(req GetRequest) (GetResponce, error) {
 	return GetResponce{UserInfo: NewUserInfo(users[0].UserID, users[0].Name, users[0].Mail), ItemGroupList: list}, nil
 }
 
-// DeleteItemGroup impl
+// PutItemGroup impl
 func (u *dynamoRepository) PutItemGroup(req PutItemGroupRequest) (PutItemGroupResponce, error) {
 	table := u.getItemGroup()
 	var successGroups = make([]string, 0)
