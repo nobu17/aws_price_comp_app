@@ -17,7 +17,8 @@ func (u *Container) NewService() services.ServiceImpl {
 	iRepo := repositories.NewItemLambdaRepositories(logger)
 	nRepo := repositories.NewNotifyLambdaRepositories(logger)
 	pRepo := repositories.NewPriceLambdaRepositories(logger)
-	serv := services.NewCompareService(logger, aRepo, iRepo, pRepo, nRepo)
+	plRepo := repositories.NewPricelogLambdaRepositories(logger)
+	serv := services.NewCompareService(logger, aRepo, iRepo, pRepo, nRepo, plRepo)
 
 	return serv
 }

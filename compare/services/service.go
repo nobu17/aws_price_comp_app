@@ -12,11 +12,12 @@ const dayThrethold = 7
 
 // compareService service interface
 type compareService struct {
-	logger           log.LoggerImpl
-	alertRepository  repositories.AlertImpl
-	itemRepository   repositories.ItemImpl
-	priceRepository  repositories.PriceImpl
-	notifyRepository repositories.NotifyImpl
+	logger             log.LoggerImpl
+	alertRepository    repositories.AlertImpl
+	itemRepository     repositories.ItemImpl
+	priceRepository    repositories.PriceImpl
+	notifyRepository   repositories.NotifyImpl
+	pricelogRepository repositories.PriceLogImpl
 }
 
 // NewCompareService constructor
@@ -24,8 +25,15 @@ func NewCompareService(logger log.LoggerImpl,
 	alertRepository repositories.AlertImpl,
 	itemRepository repositories.ItemImpl,
 	priceRepository repositories.PriceImpl,
-	notifyRepository repositories.NotifyImpl) ServiceImpl {
-	return &compareService{logger: logger, alertRepository: alertRepository, itemRepository: itemRepository, priceRepository: priceRepository, notifyRepository: notifyRepository}
+	notifyRepository repositories.NotifyImpl,
+	pricelogRepository repositories.PriceLogImpl,
+) ServiceImpl {
+	return &compareService{logger: logger,
+		alertRepository:    alertRepository,
+		itemRepository:     itemRepository,
+		priceRepository:    priceRepository,
+		notifyRepository:   notifyRepository,
+		pricelogRepository: pricelogRepository}
 }
 
 func (u *compareService) StartCompare(req InputModel) (OutputModel, error) {
@@ -38,6 +46,7 @@ func (u *compareService) StartCompare(req InputModel) (OutputModel, error) {
 	}
 
 	// compare threthold
+	var priceList = make([]repositories.ProductInfo, 0)
 	var notifyTargets = make([]repositories.NotifyProductInfo, 0)
 	for _, price := range prices.ProductInfoList {
 		if !price.IsSoldOut {
@@ -46,14 +55,23 @@ func (u *compareService) StartCompare(req InputModel) (OutputModel, error) {
 				u.logger.LogWrite(log.Warn, "not match product:"+price.ProductID)
 				continue
 			}
+			// store for log
+			priceList = append(priceList, price)
+
 			// check threthoild
-			if prod.ThretholdPrice > (price.Price + price.ShippingFee) {
+			if prod.ThretholdPrice >= (price.Price + price.ShippingFee) {
 				target := repositories.NewNotifyProductInfo(prod.ProductID, prod.StoreType, prod.ItemName, price.Price, price.ShippingFee)
 				notifyTargets = append(notifyTargets, target)
 				continue
 			}
 			u.logger.LogWrite(log.Info, fmt.Sprintf("not over threthould: ID:%v current:%v, threthod:%v, item:%v", price.ProductID, (price.Price+price.ShippingFee), prod.ThretholdPrice, prod.ItemName))
 		}
+	}
+	// store log
+	err = u.updatePriceLog(req, priceList)
+	if err != nil {
+		u.logger.LogWrite(log.Error, "updatePriceLog is failed:"+fmt.Sprint(err))
+		return OutputModel{}, err
 	}
 
 	if len(notifyTargets) <= 0 {
@@ -80,6 +98,17 @@ func (u *compareService) StartCompare(req InputModel) (OutputModel, error) {
 	}
 	u.logger.LogWrite(log.Info, "end StartCompare")
 	return OutputModel{}, nil
+}
+
+func (u *compareService) updatePriceLog(req InputModel, prices []repositories.ProductInfo) error {
+	var list = make([]repositories.PriceLogForPut, 0)
+	for _, price := range prices {
+		pLog := repositories.PriceLogForPut{ItemID: price.ProductID, StoreType: price.StoreType, Price: price.Price}
+		list = append(list, pLog)
+	}
+	param := repositories.PutPriceLogRequest{UserID: req.UserID, GroupID: req.GroupID, PriceLogList: list}
+	_, err := u.pricelogRepository.UpdatePriceLog(param)
+	return err
 }
 
 // get observe item and prices
