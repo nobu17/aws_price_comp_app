@@ -59,7 +59,7 @@ func (u *dynamoRepository) GetPriceLogs(req GetRequest) (GetResponce, error) {
 		}
 	}
 
-	responce := GetResponce{UserID: pLogs[0].UserID, GroupID: pLogs[0].GroupID, PriceLogList: list}
+	responce := GetResponce{UserID: req.UserID, GroupID: req.GroupID, PriceLogList: list}
 
 	return responce, nil
 }
