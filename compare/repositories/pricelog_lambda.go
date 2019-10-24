@@ -31,7 +31,6 @@ func (u *pricelogLambdaRepositories) UpdatePriceLog(req PutPriceLogRequest) (Put
 	if region == "" {
 		region = defaultRegion
 	}
-	req.Mode = "update"
 
 	param := pricelogLambdaParam{Method: "put", PutParam: req}
 	res, err := aws.CallLambdaWithSync(plfuncName, region, param)

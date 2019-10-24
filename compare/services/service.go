@@ -106,7 +106,7 @@ func (u *compareService) updatePriceLog(req InputModel, prices []repositories.Pr
 		pLog := repositories.PriceLogForPut{ItemID: price.ProductID, StoreType: price.StoreType, Price: price.Price}
 		list = append(list, pLog)
 	}
-	param := repositories.PutPriceLogRequest{UserID: req.UserID, GroupID: req.GroupID, PriceLogList: list}
+	param := repositories.PutPriceLogRequest{UserID: req.UserID, GroupID: req.GroupID, Mode: "update", PriceLogList: list}
 	_, err := u.pricelogRepository.UpdatePriceLog(param)
 	return err
 }
