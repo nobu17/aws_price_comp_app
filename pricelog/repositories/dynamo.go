@@ -49,15 +49,16 @@ func (u *dynamoRepository) GetPriceLogs(req GetRequest) (GetResponce, error) {
 		return GetResponce{}, err
 	}
 
+	var list = make([]PriceLog, 0)
 	if len(pLogs) < 1 {
 		u.logger.LogWrite(log.Error, "no data")
+	} else {
+		for _, price := range pLogs[0].PriceList {
+			var item = PriceLog{StoreType: price.StoreType, ItemID: price.ItemID, Price: price.Price, LastModifiedDatetime: price.LastModifiedDatetime}
+			list = append(list, item)
+		}
 	}
 
-	var list = make([]PriceLog, 0)
-	for _, price := range pLogs[0].PriceList {
-		var item = PriceLog{StoreType: price.StoreType, ItemID: price.ItemID, Price: price.Price, LastModifiedDatetime: price.LastModifiedDatetime}
-		list = append(list, item)
-	}
 	responce := GetResponce{UserID: pLogs[0].UserID, GroupID: pLogs[0].GroupID, PriceLogList: list}
 
 	return responce, nil
