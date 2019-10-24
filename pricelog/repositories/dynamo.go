@@ -43,7 +43,7 @@ func NewDynamoRepository(logger log.LoggerImpl) PriceLogImpl {
 func (u *dynamoRepository) GetPriceLogs(req GetRequest) (GetResponce, error) {
 	var pLogs []priceLogMaster
 	table := u.getPriceLog()
-	err := table.Get("user_id", req.UserID).Filter("group_id = ?", req.GroupID).All(&pLogs)
+	err := table.Get("user_id", req.UserID).Range("group_id", dynamo.Equal, req.GroupID).All(&pLogs)
 	if err != nil {
 		u.logger.LogWrite(log.Error, "priceLogs.Get Error"+fmt.Sprint(err))
 		return GetResponce{}, err
