@@ -103,7 +103,8 @@ func (u *compareService) StartCompare(req InputModel) (OutputModel, error) {
 func (u *compareService) updatePriceLog(req InputModel, prices []repositories.ProductInfo) error {
 	var list = make([]repositories.PriceLogForPut, 0)
 	for _, price := range prices {
-		pLog := repositories.PriceLogForPut{ItemID: price.ProductID, StoreType: price.StoreType, Price: price.Price}
+		allPrice := price.Price + price.ShippingFee
+		pLog := repositories.PriceLogForPut{ItemID: price.ProductID, StoreType: price.StoreType, Price: allPrice}
 		list = append(list, pLog)
 	}
 	param := repositories.PutPriceLogRequest{UserID: req.UserID, GroupID: req.GroupID, Mode: "update", PriceLogList: list}
