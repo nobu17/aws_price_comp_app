@@ -190,8 +190,10 @@ func (u *compareService) filterPastSentItems(userID string, req []repositories.N
 		// if alert item is match
 		var alertedItem = getAlertProduct(notifyItem.ProductID, notifyItem.StoreType, res.SendAlertList)
 		if alertedItem != nil {
+			u.logger.LogWriteWithMsgAndObj(log.Info, "alertedItem found:", alertedItem)
+			u.logger.LogWriteWithMsgAndObj(log.Info, "comapred item:", notifyItem)
 			// if more cheper than before alert it should alert
-			if (notifyItem.Price + notifyItem.ShippingFee) > alertedItem.Price {
+			if (notifyItem.Price + notifyItem.ShippingFee) >= alertedItem.Price {
 				u.logger.LogWriteWithMsgAndObj(log.Info, "not get over threthold:", notifyItem)
 				continue
 			}
@@ -204,12 +206,17 @@ func (u *compareService) filterPastSentItems(userID string, req []repositories.N
 }
 
 func getAlertProduct(ProductID string, storeType string, masters []repositories.SendAlertLog) *repositories.SendAlertLog {
+	var matchedItem *repositories.SendAlertLog = nil
 	for _, item := range masters {
 		if (item.ProductID == ProductID) && (item.StoreType == storeType) {
-			return &item
+			if matchedItem == nil {
+				matchedItem = &item
+			} else if matchedItem != nil && matchedItem.Price > item.Price {
+				matchedItem = &item
+			}
 		}
 	}
-	return nil
+	return matchedItem
 }
 
 func getProduct(prdouctID string, storeType string, masters []repositories.ItemMaster) *repositories.ItemMaster {
